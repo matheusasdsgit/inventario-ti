@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventário TI — Suporte | T.I.</title>
+<style>
+:root{
+  --azul:#1565C0;--azul-h:#1976D2;--azul-lt:#E3F2FD;
+  --verde:#2E7D32;--vermelho:#C62828;--amarelo:#F57F17;
+  --cinza1:#F5F6FA;--cinza2:#E8ECF0;--cinza3:#90A4AE;
+  --texto:#212529;--branco:#FFFFFF;
+  --shadow:0 1px 4px rgba(0,0,0,.10);--shadow-md:0 4px 12px rgba(0,0,0,.10);
+  --radius:8px;--nav-h:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--cinza1);color:var(--texto);min-height:100vh;}
+
+/* TOPNAV */
+#topnav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:var(--azul);display:flex;align-items:center;padding:0 24px;gap:16px;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.nav-logo{display:flex;align-items:center;gap:10px;}
+.nav-logo-icon{width:34px;height:34px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.4);}
+.nav-logo-icon svg{width:18px;height:18px;fill:#fff;}
+.nav-logo-text span:first-child{display:block;font-size:9px;font-weight:600;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.08em;}
+.nav-logo-text span:last-child{display:block;font-size:14px;font-weight:800;color:#fff;}
+.nav-div{width:1px;height:28px;background:rgba(255,255,255,.2);margin:0 4px;}
+.nav-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.85);background:rgba(255,255,255,.1);}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.nav-user{display:flex;align-items:center;gap:8px;color:#fff;font-size:13px;font-weight:600;background:rgba(255,255,255,.12);border-radius:20px;padding:6px 14px 6px 8px;}
+.nav-avatar{width:26px;height:26px;background:rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;}
+.btn-out{background:none;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-out:hover{background:rgba(255,255,255,.15);color:#fff;}
+
+/* LOADING OVERLAY */
+#loading{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:300;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+.spinner{width:36px;height:36px;border:3px solid var(--cinza2);border-top-color:var(--azul);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading p{font-size:14px;color:var(--cinza3);font-weight:600;}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;background:var(--cinza1);display:flex;flex-direction:column;z-index:100;}
+.login-topbar{height:var(--nav-h);background:var(--azul);display:flex;align-items:center;padding:0 24px;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.login-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;}
+.login-box{background:#fff;border-radius:12px;padding:40px 36px;width:100%;max-width:400px;box-shadow:var(--shadow-md);}
+.login-title{font-size:20px;font-weight:700;text-align:center;margin-bottom:6px;}
+.login-sub{font-size:13px;color:var(--cinza3);text-align:center;margin-bottom:28px;}
+.login-box label{display:block;font-size:12px;font-weight:600;color:#546E7A;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;}
+.lf{position:relative;margin-bottom:18px;}
+.lf input{width:100%;padding:10px 14px;border:1px solid var(--cinza2);border-radius:var(--radius);font-size:14px;color:var(--texto);outline:none;transition:border .15s;}
+.lf input:focus{border-color:var(--azul);}
+.btn-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--cinza3);}
+.login-erro{color:var(--vermelho);font-size:12px;text-align:center;margin-top:8px;display:none;}
+.login-copy{text-align:center;font-size:12px;color:var(--cinza3);padding:20px;}
+
+/* LAYOUT */
+#layout{display:flex;margin-top:var(--nav-h);min-height:calc(100vh - var(--nav-h));}
+#sidebar{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--cinza2);padding:16px 0;position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));overflow-y:auto;}
+.ns{font-size:10px;font-weight:700;color:var(--cinza3);text-transform:uppercase;letter-spacing:.08em;padding:12px 18px 6px;}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;color:#455A64;font-size:13px;font-weight:500;transition:all .15s;border:none;background:none;width:100%;text-align:left;border-left:3px solid transparent;}
+.ni:hover{background:var(--cinza1);color:var(--azul);}
+.ni.active{background:var(--azul-lt);color:var(--azul);font-weight:700;border-left-color:var(--azul);}
+.ni svg{width:16px;height:16px;flex-shrink:0;}
+.nc{margin-left:auto;background:var(--vermelho);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;min-width:18px;text-align:center;}
+#content{flex:1;padding:20px 28px 40px;overflow:auto;}
+
+/* PAGE HEADER */
+.ph{margin-bottom:20px;}
+.ph h1{font-size:22px;font-weight:800;display:flex;align-items:center;gap:10px;}
+.pb{font-size:11px;font-weight:700;background:var(--azul-lt);color:var(--azul);padding:3px 10px;border-radius:12px;}
+.bc{font-size:12px;color:var(--cinza3);margin-top:4px;}
+.bc span{color:var(--azul);cursor:pointer;}
+.wm{font-size:13px;color:var(--cinza3);margin-top:4px;}
+.ph-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+
+/* BOTÕES */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.btn-primary{background:var(--azul);color:#fff;}
+.btn-primary:hover{background:var(--azul-h);}
+.btn-ghost{background:#fff;border:1px solid var(--cinza2);color:var(--texto);}
+.btn-ghost:hover{background:var(--cinza1);}
+.btn-danger{background:var(--vermelho);color:#fff;}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn-full{width:100%;justify-content:center;}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-bottom:24px;}
+.kc{background:#fff;border-radius:var(--radius);padding:18px 16px;box-shadow:var(--shadow);border-top:3px solid var(--azul);}
+.kc.red{border-top-color:var(--vermelho)}.kc.green{border-top-color:var(--verde)}.kc.amber{border-top-color:var(--amarelo)}.kc.cyan{border-top-color:#0097A7}
+.kl{font-size:11px;font-weight:600;color:var(--cinza3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.kv{font-size:30px;font-weight:800;color:var(--texto);line-height:1;}
+.ks{font-size:11px;color:var(--cinza3);margin-top:4px;}
+
+/* ALERTAS */
+.stitle{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;padding-left:2px;}
+.stitle::before{content:'';display:block;width:3px;height:16px;background:var(--azul);border-radius:2px;}
+.al-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+.al{background:#fff;border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;border-left:3px solid var(--amarelo);}
+.al.red{border-left-color:var(--vermelho);}
+.al-info{flex:1;}
+.al-t{font-size:13px;font-weight:700;}
+.al-s{font-size:12px;color:var(--cinza3);}
+
+/* TABELA */
+.tc{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.ttb{padding:14px 18px;border-bottom:1px solid var(--cinza2);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.ttb h3{font-size:15px;font-weight:700;}
+.sb{display:flex;align-items:center;gap:8px;background:var(--cinza1);border:1px solid var(--cinza2);border-radius:var(--radius);padding:7px 12px;}
+.sb input{border:none;background:none;outline:none;font-size:13px;width:200px;color:var(--texto);}
+.mla{margin-left:auto;}
+table{width:100%;border-collapse:collapse;}
+thead th{background:var(--cinza1);padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--cinza3);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--cinza2);}
+tbody tr{border-bottom:1px solid var(--cinza2);transition:background .1s;}
+tbody tr:hover{background:#F8FAFC;}
+tbody tr:last-child{border-bottom:none;}
+td{padding:10px 14px;font-size:13px;vertical-align:middle;}
+.pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.pill.ativo{background:#E8F5E9;color:#2E7D32;}.pill.manutencao{background:#FFF8E1;color:#F57F17;}.pill.inativo{background:#ECEFF1;color:#607D8B;}.pill.pendente{background:#FFEBEE;color:#C62828;}.pill.assinado{background:#E8F5E9;color:#2E7D32;}
+.wa{color:#25D366;font-size:18px;text-decoration:none;transition:transform .1s;display:inline-block;}
+.wa:hover{transform:scale(1.2);}
+.empty{padding:48px;text-align:center;color:var(--cinza3);font-size:14px;}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--cinza1);padding:4px;border-radius:var(--radius);}
+.tab{padding:7px 16px;border-radius:6px;font-size:13px;font-weight:600;color:var(--cinza3);cursor:pointer;border:none;background:none;transition:all .15s;}
+.tab.active{background:#fff;color:var(--azul);box-shadow:var(--shadow);}
+
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;}
+.md{background:#fff;border-radius:12px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.mh{padding:18px 24px;border-bottom:1px solid var(--cinza2);display:flex;align-items:center;justify-content:space-between;}
+.mh h3{font-size:16px;font-weight:700;}
+.mb{padding:24px;}
+.mf{padding:14px 24px;border-top:1px solid var(--cinza2);display:flex;justify-content:flex-end;gap:10px;}
+.fg-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.fg-grid .full{grid-column:1/-1;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:11px;font-weight:700;color:#546E7A;text-transform:uppercase;letter-spacing:.05em;}
+.fg input,.fg select,.fg textarea{padding:9px 12px;border:1px solid var(--cinza2);border-radius:var(--radius);font-size:13px;color:var(--texto);outline:none;transition:border .15s;font-family:inherit;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--azul);}
+.fg textarea{resize:vertical;min-height:70px;}
+
+/* CONFIG */
+.cfg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+.cfg-card{background:#fff;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.cfg-card h4{font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--cinza2);}
+.cfg-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--cinza2);}
+.cfg-row:last-child{border-bottom:none;}
+.cfg-row label{font-size:13px;}
+.cfg-row input[type=number]{width:80px;padding:5px 8px;border:1px solid var(--cinza2);border-radius:6px;font-size:13px;text-align:center;}
+
+/* SETUP BANNER */
+.setup-banner{background:#FFF8E1;border:1px solid #FFE082;border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;display:flex;align-items:flex-start;gap:14px;}
+.setup-banner .icon{font-size:24px;flex-shrink:0;}
+.setup-banner h4{font-size:14px;font-weight:700;color:#F57F17;margin-bottom:4px;}
+.setup-banner p{font-size:13px;color:#795548;}
+.setup-banner input{margin-top:10px;width:100%;padding:9px 12px;border:1px solid #FFE082;border-radius:var(--radius);font-size:13px;outline:none;}
+.setup-banner input:focus{border-color:var(--amarelo);}
+
+/* PAGES */
+.page{display:none;}.page.active{display:block;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:#263238;color:#fff;padding:12px 20px;border-radius:var(--radius);font-size:13px;font-weight:600;box-shadow:var(--shadow-md);z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.ok{border-left:3px solid var(--verde);}
+.toast.err{border-left:3px solid var(--vermelho);}
+
+/* ══ MOBILE ══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Esconde sidebar no mobile */
+  #sidebar { display: none; }
+
+  /* Topnav compacto */
+  #topnav { padding: 0 12px; gap: 8px; }
+  .nav-badge { display: none; }
+  .nav-div { display: none; }
+  .nav-logo-text span:last-child { font-size: 12px; }
+  .btn-out { padding: 4px 8px; font-size: 11px; }
+  .nav-user { padding: 5px 8px; font-size: 12px; }
+
+  /* Layout full width */
+  #layout { flex-direction: column; }
+  #content { padding: 12px 12px 60px; }
+
+  /* Page header */
+  .ph h1 { font-size: 17px; }
+  .ph-row { flex-direction: column; gap: 10px; }
+  #ph-actions { width: 100%; }
+  #ph-actions .btn { width: 100%; justify-content: center; }
+  .wm { display: none; }
+
+  /* KPI grid 2 colunas */
+  .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kv { font-size: 22px; }
+
+  /* Alertas */
+  .al { flex-wrap: wrap; gap: 8px; }
+  .al .btn { width: 100%; justify-content: center; margin-top: 4px; }
+
+  /* Tabela scroll horizontal */
+  .tc { overflow-x: auto; }
+  table { min-width: 600px; }
+  td, thead th { padding: 8px 10px; font-size: 12px; }
+
+  /* Toolbar da tabela */
+  .ttb { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .sb { width: 100%; }
+  .sb input { width: 100%; }
+  .mla { margin-left: 0; width: 100%; }
+
+  /* Tabs */
+  .tabs { width: 100%; }
+  .tab { flex: 1; text-align: center; font-size: 12px; padding: 6px 8px; }
+
+  /* Modal full screen */
+  .mo { padding: 0; align-items: flex-end; }
+  .md { border-radius: 16px 16px 0 0; max-height: 92vh; }
+  .fg-grid { grid-template-columns: 1fr; }
+  .fg-grid .full { grid-column: 1; }
+
+  /* Config */
+  .cfg-grid { grid-template-columns: 1fr; }
+
+  /* Setup banner */
+  .setup-banner { flex-direction: column; }
+
+  /* Bottom nav mobile */
+  #mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #fff;
+    border-top: 1px solid var(--cinza2);
+    z-index: 40;
+    box-shadow: 0 -2px 8px rgba(0,0,0,.08);
+  }
+  .mn-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 8px 4px; gap: 3px;
+    font-size: 10px; font-weight: 600; color: var(--cinza3);
+    cursor: pointer; border: none; background: none;
+    transition: color .15s; position: relative;
+  }
+  .mn-item.active { color: var(--azul); }
+  .mn-item svg { width: 20px; height: 20px; }
+  .mn-badge {
+    position: absolute; top: 4px; right: calc(50% - 16px);
+    background: var(--vermelho); color: #fff;
+    font-size: 9px; font-weight: 700; border-radius: 8px;
+    padding: 1px 5px; min-width: 16px; text-align: center;
+  }
+}
+
+@media (min-width: 769px) {
+  #mobile-nav { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading"><div class="spinner"></div><p id="loading-msg">Carregando…</p></div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-topbar">
+    <div class="nav-logo">
+      <div class="nav-logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      <div class="nav-logo-text"><span>Suporte</span><span>T.I. — Inventário</span></div>
+    </div>
+  </div>
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-title">Login</div>
+      <div class="login-sub">Acesso restrito ao setor de T.I.</div>
+      <label>Usuário</label>
+      <div class="lf"><input type="text" id="inp-user" placeholder="suporte" autocomplete="username"></div>
+      <label>Senha</label>
+      <div class="lf">
+        <input type="password" id="inp-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="btn-eye" onclick="toggleSenha()">👁</button>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
+      <div class="login-erro" id="login-erro">Usuário ou senha incorretos.</div>
+    </div>
+  </div>
+  <div class="login-copy">2026 © Suporte T.I. — Grupo Três Marias | EESAP | Algoritmo</div>
+</div>
+
+<!-- TOPNAV -->
+<div id="topnav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+    <div class="nav-logo-text"><span>Suporte</span><span>T.I. — Inventário</span></div>
+  </div>
+  <div class="nav-div"></div>
+  <span class="nav-badge">TRÊS MARIAS</span>
+  <span class="nav-badge">EESAP</span>
+  <span class="nav-badge">ALGORITMO</span>
+  <div class="nav-right">
+    <div class="nav-user"><div class="nav-avatar" id="nav-av">TI</div><span id="nav-un">Suporte TI</span></div>
+    <button class="btn-out" onclick="doLogout()">Sair</button>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div id="layout">
+  <div id="sidebar">
+    <div class="ns">Principal</div>
+    <button class="ni active" onclick="goPage('dashboard',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</button>
+    <div class="ns">Equipamentos</div>
+    <button class="ni" onclick="goPage('computadores',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Computadores</button>
+    <button class="ni" onclick="goPage('impressoras',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><rect x="6" y="17" width="12" height="5" rx="1"/><path d="M6 13H4a2 2 0 00-2 2v3h4v-3"/><path d="M18 13h2a2 2 0 012 2v3h-4v-3"/></svg>Impressoras</button>
+    <button class="ni" onclick="goPage('diversos',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Equip. Diversos</button>
+    <div class="ns">Gestão</div>
+    <button class="ni" onclick="goPage('manutencao',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>Manutenções<span class="nc" id="badge-man">0</span></button>
+    <button class="ni" onclick="goPage('termos',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Termos<span class="nc" id="badge-termos">0</span></button>
+    <div class="ns">Sistema</div>
+    <button class="ni" onclick="goPage('config',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41"/></svg>Configurações</button>
+  </div>
+
+  <div id="content">
+    <!-- SETUP BANNER (aparece enquanto não tiver URL configurada) -->
+    <div class="setup-banner" id="setup-banner" style="display:none">
+      <div class="icon">⚙️</div>
+      <div style="flex:1">
+        <h4>Configure a URL do Apps Script</h4>
+        <p>Cole abaixo a URL gerada ao implantar o Web App no Google Apps Script. Após configurar, os dados serão compartilhados entre os dois usuários em tempo real.</p>
+        <input type="text" id="inp-script-url" placeholder="https://script.google.com/macros/s/…/exec">
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="salvarScriptUrl()">Salvar URL</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('setup-banner').style.display='none'">Usar modo local</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph">
+      <div class="ph-row">
+        <div>
+          <h1 id="ph-title">Dashboard <span class="pb">SUPORTE | T.I.</span></h1>
+          <div class="bc"><span onclick="goPage('dashboard',document.querySelector('.ni'))">Início</span> › <span id="ph-bread">Dashboard</span></div>
+          <div class="wm">👾 Bem-vindo, <strong id="ph-user">Suporte TI</strong>! Explore os módulos disponíveis.</div>
+        </div>
+        <div id="ph-actions" style="display:flex;gap:10px;align-items:center;flex-shrink:0"></div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <div id="dash-alerts"></div>
+    </div>
+
+    <!-- COMPUTADORES -->
+    <div class="page" id="page-computadores">
+      <div class="tc"><div class="ttb"><h3>Computadores</h3><div class="sb mla"><svg width="14" height="14" fill="none" stroke="#90A4AE" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" placeholder="Buscar tombamento, setor…" oninput="filtrar('pc',this.value)"></div></div><div id="tbl-pc"></div></div>
+    </div>
+
+    <!-- IMPRESSORAS -->
+    <div class="page" id="page-impressoras">
+      <div class="tc"><div class="ttb"><h3>Impressoras</h3><div class="sb mla"><svg width="14" height="14" fill="none" stroke="#90A4AE" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" placeholder="Buscar tombamento, setor…" oninput="filtrar('imp',this.value)"></div></div><div id="tbl-imp"></div></div>
+    </div>
+
+    <!-- DIVERSOS -->
+    <div class="page" id="page-diversos">
+      <div class="tc"><div class="ttb"><h3>Equipamentos Diversos</h3><div class="sb mla"><svg width="14" height="14" fill="none" stroke="#90A4AE" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" placeholder="Buscar tombamento, tipo…" oninput="filtrar('eq',this.value)"></div></div><div id="tbl-eq"></div></div>
+    </div>
+
+    <!-- MANUTENÇÃO -->
+    <div class="page" id="page-manutencao">
+      <div class="tc"><div class="ttb"><h3>Manutenções</h3><div class="sb mla"><svg width="14" height="14" fill="none" stroke="#90A4AE" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" placeholder="Buscar tombamento…" oninput="filtrar('man',this.value)"></div></div><div id="tbl-man"></div></div>
+    </div>
+
+    <!-- TERMOS -->
+    <div class="page" id="page-termos">
+      <div class="tc">
+        <div class="ttb"><h3>Termos de Responsabilidade</h3>
+          <div class="tabs mla"><button class="tab active" onclick="setFT('todos',this)">Todos</button><button class="tab" onclick="setFT('pendente',this)">Pendentes</button><button class="tab" onclick="setFT('assinado',this)">Assinados</button></div>
+        </div>
+        <div id="tbl-termos"></div>
+      </div>
+    </div>
+
+    <!-- CONFIG -->
+    <div class="page" id="page-config">
+      <div class="cfg-grid">
+        <div class="cfg-card">
+          <h4>🔗 Conexão Google Sheets</h4>
+          <div class="fg" style="margin-bottom:12px">
+            <label>URL do Web App (Apps Script)</label>
+            <input type="text" id="cfg-url" placeholder="https://script.google.com/macros/s/…/exec">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary btn-sm" onclick="salvarScriptUrl()">Salvar URL</button>
+            <button class="btn btn-ghost btn-sm" onclick="testarConexao()">Testar conexão</button>
+          </div>
+          <p style="font-size:11px;color:var(--cinza3);margin-top:10px" id="cfg-status">—</p>
+        </div>
+
+        <div class="cfg-card">
+          <h4>⚙️ Intervalo de manutenção por setor</h4>
+          <div id="cfg-setores"></div>
+          <button class="btn btn-primary" style="margin-top:14px;width:100%" onclick="salvarCfgSetores()">Salvar</button>
+        </div>
+
+        <div class="cfg-card" style="grid-column:1/-1">
+          <h4>💬 Mensagens padrão do WhatsApp</h4>
+          <p style="font-size:12px;color:var(--cinza3);margin-bottom:16px">Variáveis: <code style="background:var(--cinza1);padding:1px 5px;border-radius:4px">[RESPONSAVEL]</code> <code style="background:var(--cinza1);padding:1px 5px;border-radius:4px">[TOMBAMENTO]</code> <code style="background:var(--cinza1);padding:1px 5px;border-radius:4px">[DATA]</code> <code style="background:var(--cinza1);padding:1px 5px;border-radius:4px">[LINK_TERMO]</code></p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+            <div>
+              <label style="font-size:12px;font-weight:700;color:#546E7A;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px">🔧 Aviso de Manutenção</label>
+              <textarea id="msg-man" rows="5" style="width:100%;padding:10px;border:1px solid var(--cinza2);border-radius:var(--radius);font-size:13px;font-family:inherit;resize:vertical;outline:none;"></textarea>
+            </div>
+            <div>
+              <label style="font-size:12px;font-weight:700;color:#546E7A;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px">📄 Envio de Termo</label>
+              <textarea id="msg-termo" rows="5" style="width:100%;padding:10px;border:1px solid var(--cinza2);border-radius:var(--radius);font-size:13px;font-family:inherit;resize:vertical;outline:none;"></textarea>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="margin-top:14px" onclick="salvarMensagens()">Salvar mensagens</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EQUIP -->
+<div class="mo" id="modal-equip" style="display:none" onclick="if(event.target===this)closeModal('modal-equip')">
+  <div class="md">
+    <div class="mh"><h3 id="meq-title">Novo Equipamento</h3><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-equip')">✕</button></div>
+    <div class="mb"><div class="fg-grid" id="meq-form"></div></div>
+    <div class="mf"><button class="btn btn-ghost" onclick="closeModal('modal-equip')">Cancelar</button><button class="btn btn-primary" onclick="salvarEquip()">Salvar</button></div>
+  </div>
+</div>
+
+<!-- MODAL MANUTENÇÃO -->
+<div class="mo" id="modal-man" style="display:none" onclick="if(event.target===this)closeModal('modal-man')">
+  <div class="md">
+    <div class="mh"><h3>Registrar Manutenção</h3><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-man')">✕</button></div>
+    <div class="mb">
+      <div class="fg-grid">
+        <div class="fg"><label>Data</label><input type="date" id="man-data"></div>
+        <div class="fg"><label>Tombamento</label><input type="text" id="man-tomb" oninput="lookupMan(this.value)" placeholder="PC-001"></div>
+        <div class="fg full" id="man-found" style="display:none"><div style="background:var(--azul-lt);border-radius:var(--radius);padding:10px;font-size:13px;color:var(--azul)" id="man-found-box"></div></div>
+        <div class="fg"><label>Tipo</label><select id="man-tipo"><option>Preventiva</option><option>Corretiva</option><option>Formatação</option><option>Upgrade</option></select></div>
+        <div class="fg"><label>Custo (R$)</label><input type="number" id="man-custo" placeholder="0,00" step="0.01" min="0"></div>
+        <div class="fg"><label>Técnico</label><input type="text" id="man-tec"></div>
+        <div class="fg"><label>Status</label><select id="man-status"><option>Em andamento</option><option>Concluída</option></select></div>
+        <div class="fg full"><label>Descrição do serviço</label><textarea id="man-desc" rows="3"></textarea></div>
+        <div class="fg full"><label>Observações</label><textarea id="man-obs" rows="2"></textarea></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn btn-ghost" onclick="closeModal('modal-man')">Cancelar</button><button class="btn btn-primary" onclick="salvarMan()">Registrar</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// CONFIGURAÇÃO — cole a URL do Apps Script aqui após implantar
+// ═══════════════════════════════════════════════════════════════════════════
+let SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2LzYdAXn8fBzbM2L_QaRSL2TRPg_l7aGq1XB4NwedGoYC0Fnz1fhiKI-H5ay_A8hG/exec";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ESTADO
+// ═══════════════════════════════════════════════════════════════════════════
+const S = {
+  user: null, page: 'dashboard',
+  meqTipo: null, meqIdx: null, ftTermos: 'todos',
+  cfg: {
+    setores: {TI:6,Administrativo:12,RH:12,Financeiro:6,Operacional:6,Comercial:12,'Sala de Reunião':12},
+    msgMan:   'Olá [RESPONSAVEL]! A manutenção do equipamento [TOMBAMENTO] está prevista para [DATA]. Por favor entre em contato com o suporte de T.I. para agendar.',
+    msgTermo: 'Olá [RESPONSAVEL]! Por favor assine o termo de responsabilidade referente ao equipamento [TOMBAMENTO] pelo link abaixo: [LINK_TERMO]',
+  }
+};
+const USERS = { suporte: { senha:'suporte@2025', nome:'Suporte T.I.' } };
+const db = { pc:[], imp:[], eq:[], man:[] };
+
+// ═══════════════════════════════════════════════════════════════════════════
+// API — Google Apps Script
+// ═══════════════════════════════════════════════════════════════════════════
+async function apiGet(params) {
+  if (!SCRIPT_URL) return null;
+  const url = SCRIPT_URL + '?' + new URLSearchParams(params);
+  const r = await fetch(url);
+  return r.json();
+}
+async function apiPost(body) {
+  if (!SCRIPT_URL) return null;
+  const r = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(body)
+  });
+  return r.json();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PERSISTÊNCIA — Google Sheets + fallback localStorage
+// ═══════════════════════════════════════════════════════════════════════════
+function saveLocal() {
+  localStorage.setItem('inv_pc',  JSON.stringify(db.pc));
+  localStorage.setItem('inv_imp', JSON.stringify(db.imp));
+  localStorage.setItem('inv_eq',  JSON.stringify(db.eq));
+  localStorage.setItem('inv_man', JSON.stringify(db.man));
+  localStorage.setItem('inv_cfg', JSON.stringify(S.cfg));
+}
+function loadLocal() {
+  db.pc  = JSON.parse(localStorage.getItem('inv_pc')  || 'null') || demoPC();
+  db.imp = JSON.parse(localStorage.getItem('inv_imp') || 'null') || demoIMP();
+  db.eq  = JSON.parse(localStorage.getItem('inv_eq')  || 'null') || demoEQ();
+  db.man = JSON.parse(localStorage.getItem('inv_man') || 'null') || demoMAN();
+  const c = JSON.parse(localStorage.getItem('inv_cfg') || 'null');
+  if (c) S.cfg = {...S.cfg, ...c};
+}
+async function carregarDoSheets() {
+  if (!SCRIPT_URL) { loadLocal(); return; }
+  showLoading('Conectando ao Google Sheets…');
+  try {
+    const [pc, imp, eq, man, cfg] = await Promise.all([
+      apiGet({action:'read', aba:'Computadores'}),
+      apiGet({action:'read', aba:'Impressoras'}),
+      apiGet({action:'read', aba:'Equipamentos Diversos'}),
+      apiGet({action:'read', aba:'Manutencao'}),
+      apiGet({action:'config'}),
+    ]);
+    if (pc)  db.pc  = pc;
+    if (imp) db.imp = imp;
+    if (eq)  db.eq  = eq;
+    if (man) db.man = man;
+    if (cfg) {
+      // Reconstruir setores do config
+      const setores = {};
+      Object.entries(cfg).forEach(([k,v]) => {
+        if (k.startsWith('setor_')) setores[k.replace('setor_','')] = parseInt(v)||12;
+      });
+      if (Object.keys(setores).length) S.cfg.setores = setores;
+      if (cfg.msg_manutencao) S.cfg.msgMan   = cfg.msg_manutencao;
+      if (cfg.msg_termo)      S.cfg.msgTermo = cfg.msg_termo;
+    }
+    saveLocal();
+  } catch(e) {
+    toast('Erro ao conectar. Usando dados locais.','err');
+    loadLocal();
+  }
+  hideLoading();
+}
+async function gravarNoSheets(aba, obj) {
+  saveLocal();
+  if (!SCRIPT_URL) return;
+  try {
+    await apiPost({ action:'save', aba, data: obj });
+  } catch(e) {
+    toast('Aviso: dados salvos localmente. Sincronização pendente.','err');
+  }
+}
+async function gravarManutencaoSheets(obj) {
+  if (!SCRIPT_URL) return;
+  try { await apiPost({ action:'save', aba:'Manutencao', data: obj }); } catch(e) {}
+}
+async function gravarConfigSheets(cfgObj) {
+  if (!SCRIPT_URL) return;
+  try { await apiPost({ action:'saveConfig', config: cfgObj }); } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DEMOS
+// ═══════════════════════════════════════════════════════════════════════════
+function demoPC() { return [{tomb:'PC-001',tipo:'Desktop',marca:'Dell',modelo:'OptiPlex 7090',proc:'Intel i7-10700',ram:'16 GB',arm:'512 GB SSD',so:'Windows 11 Pro',setor:'TI',resp:'João Silva',whats:'5583999990001',local:'Sala 01',status:'Ativo',ult_man:'2025-01-01',t_status:'Assinado',t_data:'2025-01-10',t_link:'',obs:''},{tomb:'PC-002',tipo:'Notebook',marca:'Lenovo',modelo:'ThinkPad E14',proc:'Intel i5-1135G7',ram:'8 GB',arm:'256 GB SSD',so:'Windows 11 Pro',setor:'RH',resp:'Maria Souza',whats:'5583999990002',local:'Sala 05',status:'Ativo',ult_man:'2025-03-15',t_status:'Pendente',t_data:'',t_link:'',obs:''},{tomb:'PC-003',tipo:'Desktop',marca:'HP',modelo:'ProDesk 400 G7',proc:'Intel i3-10100',ram:'8 GB',arm:'1 TB HDD',so:'Windows 10 Pro',setor:'Financeiro',resp:'Carlos Lima',whats:'5583999990003',local:'Sala 03',status:'Manutenção',ult_man:'2024-06-10',t_status:'Assinado',t_data:'2024-06-12',t_link:'',obs:''}]; }
+function demoIMP() { return [{tomb:'IMP-001',marca:'HP',modelo:'LaserJet Pro M404n',tipo:'Laser',conexao:'Rede',setor:'Administrativo',resp:'Ana Ferreira',whats:'5583999990004',local:'Corredor A',status:'Ativo',ult_man:'2025-02-01',t_status:'Assinado',t_data:'2025-02-05',t_link:'',obs:''},{tomb:'IMP-002',marca:'Epson',modelo:'L3150',tipo:'Multifuncional',conexao:'USB/WiFi',setor:'RH',resp:'Maria Souza',whats:'5583999990002',local:'Sala 05',status:'Ativo',ult_man:'2025-04-10',t_status:'Assinado',t_data:'2025-04-12',t_link:'',obs:''}]; }
+function demoEQ() { return [{tomb:'EQ-001',tipo_eq:'Switch',marca:'Cisco',modelo:'SG110-16',setor:'TI',resp:'João Silva',whats:'5583999990001',local:'Rack Server',status:'Ativo',ult_man:'2025-01-01',t_status:'Assinado',t_data:'2025-01-03',t_link:'',obs:''},{tomb:'EQ-002',tipo_eq:'Nobreak',marca:'APC',modelo:'Smart-UPS 1500',setor:'TI',resp:'João Silva',whats:'5583999990001',local:'Sala Server',status:'Ativo',ult_man:'2025-01-01',t_status:'Assinado',t_data:'2025-01-03',t_link:'',obs:''},{tomb:'EQ-003',tipo_eq:'Projetor',marca:'Epson',modelo:'PowerLite X49',setor:'Sala de Reunião',resp:'Recepção',whats:'5583999990005',local:'Sala Reunião 01',status:'Ativo',ult_man:'2025-03-05',t_status:'Pendente',t_data:'',t_link:'',obs:''}]; }
+function demoMAN() { return [{data:'2024-06-10',tomb:'PC-003',tipo:'Corretiva',desc:'Troca de HD',custo:350,tec:'Técnico A',status:'Concluída',obs:''},{data:'2025-04-01',tomb:'IMP-001',tipo:'Preventiva',desc:'Limpeza e calibração',custo:0,tec:'Técnico B',status:'Concluída',obs:''}]; }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════════════════════
+async function doLogin() {
+  const u = document.getElementById('inp-user').value.trim();
+  const p = document.getElementById('inp-pass').value;
+  if (USERS[u] && USERS[u].senha === p) {
+    S.user = { login:u, nome:USERS[u].nome };
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('nav-un').textContent = USERS[u].nome;
+    document.getElementById('ph-user').textContent = USERS[u].nome;
+    document.getElementById('nav-av').textContent = 'TI';
+    if (!SCRIPT_URL) document.getElementById('setup-banner').style.display = 'flex';
+    await carregarDoSheets();
+    renderDash();
+  } else {
+    document.getElementById('login-erro').style.display = 'block';
+  }
+}
+function doLogout() {
+  S.user = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('inp-pass').value = '';
+  document.getElementById('login-erro').style.display = 'none';
+}
+function toggleSenha() {
+  const i = document.getElementById('inp-pass');
+  i.type = i.type === 'password' ? 'text' : 'password';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// URL DO SCRIPT
+// ═══════════════════════════════════════════════════════════════════════════
+function salvarScriptUrl() {
+  const url = (document.getElementById('inp-script-url') || document.getElementById('cfg-url'))?.value?.trim();
+  if (!url) { toast('Cole a URL do Apps Script.','err'); return; }
+  SCRIPT_URL = url;
+  localStorage.setItem('inv_script_url', url);
+  document.getElementById('setup-banner').style.display = 'none';
+  if (document.getElementById('cfg-url')) document.getElementById('cfg-url').value = url;
+  toast('URL salva! Inicializando planilha…','ok');
+  apiGet({action:'init'}).then(()=>{ carregarDoSheets().then(renderDash); });
+}
+async function testarConexao() {
+  const url = document.getElementById('cfg-url').value.trim();
+  if (!url) { toast('Informe a URL primeiro.','err'); return; }
+  SCRIPT_URL = url;
+  document.getElementById('cfg-status').textContent = 'Testando…';
+  try {
+    const r = await apiGet({action:'config'});
+    if (r && !r.error) {
+      document.getElementById('cfg-status').textContent = '✅ Conexão OK!';
+      localStorage.setItem('inv_script_url', url);
+      toast('Conexão com Google Sheets OK!','ok');
+    } else {
+      document.getElementById('cfg-status').textContent = '❌ Erro: ' + (r?.error||'resposta inválida');
+    }
+  } catch(e) {
+    document.getElementById('cfg-status').textContent = '❌ Falha na conexão.';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════════════════════════════════
+function goPage(pg, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+pg).classList.add('active');
+  if(el) el.classList.add('active');
+  S.page = pg;
+  const T={dashboard:'Dashboard',computadores:'Computadores',impressoras:'Impressoras',diversos:'Equip. Diversos',manutencao:'Manutenções',termos:'Termos',config:'Configurações'};
+  document.getElementById('ph-title').innerHTML=`${T[pg]} <span class="pb">SUPORTE | T.I.</span>`;
+  document.getElementById('ph-bread').textContent=T[pg];
+  const act=document.getElementById('ph-actions'); act.innerHTML='';
+  if(pg==='computadores') act.innerHTML='<button class="btn btn-primary" onclick="openMEQ(\'pc\')">+ Novo computador</button>';
+  if(pg==='impressoras')  act.innerHTML='<button class="btn btn-primary" onclick="openMEQ(\'imp\')">+ Nova impressora</button>';
+  if(pg==='diversos')     act.innerHTML='<button class="btn btn-primary" onclick="openMEQ(\'eq\')">+ Novo equipamento</button>';
+  if(pg==='manutencao')   act.innerHTML='<button class="btn btn-primary" onclick="openMMAN()">+ Registrar manutenção</button>';
+  if(pg==='computadores') renderTbl('pc');
+  if(pg==='impressoras')  renderTbl('imp');
+  if(pg==='diversos')     renderTbl('eq');
+  if(pg==='manutencao')   renderTbl('man');
+  if(pg==='termos')       renderTbl('termos');
+  if(pg==='config')       renderCfg();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════════════
+function proxMan(ult,setor){if(!ult)return null;const m=S.cfg.setores[setor]||12;const d=new Date(ult);d.setMonth(d.getMonth()+m);return d;}
+function fmt(s){if(!s)return'—';const d=new Date(s);if(isNaN(d))return s;return d.toLocaleDateString('pt-BR');}
+function diasR(d){return d?Math.ceil((d-new Date())/86400000):null;}
+function todos(){return[...db.pc.map(e=>({...e,_cat:'Computador'})),...db.imp.map(e=>({...e,_cat:'Impressora'})),...db.eq.map(e=>({...e,_cat:'Equip. Diversos'}))];}
+function buildMsg(tpl,v){return tpl.replace(/\[RESPONSAVEL\]/g,v.resp||'').replace(/\[TOMBAMENTO\]/g,v.tomb||'').replace(/\[DATA\]/g,v.data||'').replace(/\[LINK_TERMO\]/g,v.link||'');}
+function wa(num,msg){if(!num)return'—';return`<a class="wa" href="https://wa.me/${num}?text=${encodeURIComponent(msg)}" target="_blank">💬</a>`;}
+function pill(s){const m={Ativo:'ativo',Manutenção:'manutencao',Inativo:'inativo',Pendente:'pendente',Assinado:'assinado'};return`<span class="pill ${m[s]||''}">${s||'—'}</span>`;}
+function empty(){return`<div class="empty">Nenhum registro encontrado.</div>`;}
+function showLoading(msg=''){document.getElementById('loading').style.display='flex';document.getElementById('loading-msg').textContent=msg||'Carregando…';}
+function hideLoading(){document.getElementById('loading').style.display='none';}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════════════════════
+function renderDash(){
+  const all=todos();
+  const total=all.length,ativos=all.filter(e=>e.status==='Ativo').length,emMan=all.filter(e=>e.status==='Manutenção').length,tPend=all.filter(e=>e.t_status==='Pendente').length;
+  let venc=0,p30=0; const aM=[],aT=[];
+  all.forEach(e=>{
+    const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);
+    if(pm&&d!==null){if(d<0){venc++;aM.push({...e,d,pm});}else if(d<=30){p30++;aM.push({...e,d,pm});}}
+    if(e.t_status==='Pendente') aT.push(e);
+  });
+  document.getElementById('badge-man').textContent=venc+p30;
+  document.getElementById('badge-termos').textContent=tPend;
+  document.getElementById('kpi-grid').innerHTML=[
+    {l:'Total de ativos',v:total,s:'equipamentos cadastrados',c:''},
+    {l:'Ativos',v:ativos,s:'em operação',c:'green'},
+    {l:'Em manutenção',v:emMan,s:'aguardando serviço',c:'amber'},
+    {l:'Termos pendentes',v:tPend,s:'aguardando assinatura',c:'red'},
+    {l:'Manutenção vencida',v:venc,s:'equipamentos',c:'red'},
+    {l:'Vence em 30 dias',v:p30,s:'equipamentos',c:'amber'},
+    {l:'Computadores',v:db.pc.length,s:'',c:''},
+    {l:'Impressoras',v:db.imp.length,s:'',c:''},
+    {l:'Equip. Diversos',v:db.eq.length,s:'',c:'cyan'},
+  ].map(k=>`<div class="kc ${k.c}"><div class="kl">${k.l}</div><div class="kv">${k.v}</div>${k.s?`<div class="ks">${k.s}</div>`:''}</div>`).join('');
+  let html='';
+  if(aM.length){
+    html+=`<div class="stitle">⚠️ Manutenções vencidas ou próximas</div><div class="al-list">`;
+    html+=aM.map(e=>{const urg=e.d<0;const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:fmt(e.pm?.toISOString())});
+    return`<div class="al ${urg?'red':''}"><div style="font-size:18px">${urg?'🔴':'🟡'}</div><div class="al-info"><div class="al-t">${e.tomb} — ${e.modelo||e.tipo_eq||''} (${e._cat})</div><div class="al-s">${e.setor} · ${e.resp} · ${urg?`Venceu há ${Math.abs(e.d)} dia(s)`:`Vence em ${e.d} dia(s)`} · ${fmt(e.pm?.toISOString())}</div></div>${e.whats?`<a class="btn btn-ghost btn-sm" href="https://wa.me/${e.whats}?text=${encodeURIComponent(msg)}" target="_blank">💬 Avisar</a>`:''}</div>`;
+    }).join('')+'</div>';
+  }
+  if(aT.length){
+    html+=`<div class="stitle" style="margin-top:24px">📄 Termos pendentes</div><div class="al-list">`;
+    html+=aT.map(e=>{const msg=buildMsg(S.cfg.msgTermo,{resp:e.resp,tomb:e.tomb,link:e.t_link||'(sem link cadastrado)'});
+    return`<div class="al"><div style="font-size:18px">📄</div><div class="al-info"><div class="al-t">${e.tomb} — ${e.modelo||e.tipo_eq||e.marca||''}</div><div class="al-s">${e.setor} · ${e.resp}</div></div>${e.whats?`<a class="btn btn-ghost btn-sm" href="https://wa.me/${e.whats}?text=${encodeURIComponent(msg)}" target="_blank">💬 Enviar termo</a>`:''}</div>`;
+    }).join('')+'</div>';
+  }
+  document.getElementById('dash-alerts').innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TABELAS
+// ═══════════════════════════════════════════════════════════════════════════
+function renderTbl(tipo,f=''){
+  const q=f.toLowerCase();const el=document.getElementById('tbl-'+tipo);
+  if(tipo==='pc'){
+    const rows=db.pc.filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
+    el.innerHTML=rows.length?`<table><thead><tr><th>Tombamento</th><th>Tipo</th><th>Modelo</th><th>Processador</th><th>RAM</th><th>Setor</th><th>Responsável</th><th>Status</th><th>Próx. Man.</th><th>Termo</th><th>WA</th><th></th></tr></thead><tbody>${rows.map(e=>{const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);const pmH=pm?`<span style="color:${d<0?'var(--vermelho)':d<=30?'var(--amarelo)':'inherit'}">${fmt(pm.toISOString())}</span>`:'—';const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:pm?fmt(pm.toISOString()):'em breve'});return`<tr><td><strong>${e.tomb}</strong></td><td>${e.tipo}</td><td>${e.marca} ${e.modelo}</td><td style="font-size:12px">${e.proc}</td><td>${e.ram}</td><td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td><td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td><td><button class="btn btn-ghost btn-sm" onclick="openMEQ('pc',${db.pc.indexOf(e)})">✏️</button></td></tr>`;}).join('')}</tbody></table>`:empty();
+  }
+  if(tipo==='imp'){
+    const rows=db.imp.filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
+    el.innerHTML=rows.length?`<table><thead><tr><th>Tombamento</th><th>Marca</th><th>Modelo</th><th>Tipo</th><th>Setor</th><th>Responsável</th><th>Status</th><th>Próx. Man.</th><th>Termo</th><th>WA</th><th></th></tr></thead><tbody>${rows.map(e=>{const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);const pmH=pm?`<span style="color:${d<0?'var(--vermelho)':d<=30?'var(--amarelo)':'inherit'}">${fmt(pm.toISOString())}</span>`:'—';const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:pm?fmt(pm.toISOString()):'em breve'});return`<tr><td><strong>${e.tomb}</strong></td><td>${e.marca}</td><td>${e.modelo}</td><td>${e.tipo}</td><td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td><td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td><td><button class="btn btn-ghost btn-sm" onclick="openMEQ('imp',${db.imp.indexOf(e)})">✏️</button></td></tr>`;}).join('')}</tbody></table>`:empty();
+  }
+  if(tipo==='eq'){
+    const rows=db.eq.filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
+    el.innerHTML=rows.length?`<table><thead><tr><th>Tombamento</th><th>Tipo</th><th>Marca</th><th>Modelo</th><th>Setor</th><th>Responsável</th><th>Status</th><th>Próx. Man.</th><th>Termo</th><th>WA</th><th></th></tr></thead><tbody>${rows.map(e=>{const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);const pmH=pm?`<span style="color:${d<0?'var(--vermelho)':d<=30?'var(--amarelo)':'inherit'}">${fmt(pm.toISOString())}</span>`:'—';const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:pm?fmt(pm.toISOString()):'em breve'});return`<tr><td><strong>${e.tomb}</strong></td><td>${e.tipo_eq}</td><td>${e.marca}</td><td>${e.modelo}</td><td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td><td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td><td><button class="btn btn-ghost btn-sm" onclick="openMEQ('eq',${db.eq.indexOf(e)})">✏️</button></td></tr>`;}).join('')}</tbody></table>`:empty();
+  }
+  if(tipo==='man'){
+    const rows=db.man.filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
+    const enr=rows.map(m=>{const eq=todos().find(e=>e.tomb===m.tomb)||{};return{...m,modelo:eq.modelo||eq.tipo_eq||'—',setor:eq.setor||'—',resp_:eq.resp||'—'};});
+    el.innerHTML=enr.length?`<table><thead><tr><th>Data</th><th>Tombamento</th><th>Equipamento</th><th>Setor</th><th>Responsável</th><th>Tipo</th><th>Técnico</th><th>Custo</th><th>Status</th></tr></thead><tbody>${enr.map(e=>`<tr><td>${fmt(e.data)}</td><td><strong>${e.tomb}</strong></td><td>${e.modelo}</td><td>${e.setor}</td><td>${e.resp_}</td><td>${e.tipo}</td><td>${e.tec||'—'}</td><td>${Number(e.custo)>0?'R$ '+Number(e.custo).toFixed(2).replace('.',','):'—'}</td><td>${pill(e.status)}</td></tr>`).join('')}</tbody></table>`:empty();
+  }
+  if(tipo==='termos'){
+    const ft=S.ftTermos;const all=todos().filter(e=>ft==='todos'||e.t_status?.toLowerCase()===ft);
+    el.innerHTML=all.length?`<table><thead><tr><th>Tombamento</th><th>Categoria</th><th>Modelo</th><th>Setor</th><th>Responsável</th><th>Status</th><th>Data Assinatura</th><th>Documento</th><th>WA Termo</th></tr></thead><tbody>${all.map(e=>{const msg=buildMsg(S.cfg.msgTermo,{resp:e.resp,tomb:e.tomb,link:e.t_link||'(link não cadastrado)'});const doc=e.t_link?`<a href="${e.t_link}" target="_blank" class="btn btn-ghost btn-sm">📎 Ver</a>`:'<span style="color:var(--cinza3);font-size:12px">—</span>';return`<tr><td><strong>${e.tomb}</strong></td><td>${e._cat}</td><td>${e.modelo||e.tipo_eq||e.marca||'—'}</td><td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.t_status)}</td><td>${fmt(e.t_data)||'—'}</td><td>${doc}</td><td>${wa(e.whats,msg)}</td></tr>`;}).join('')}</tbody></table>`:empty();
+  }
+}
+function filtrar(tipo,v){renderTbl(tipo,v);}
+function setFT(ft,el){S.ftTermos=ft;document.querySelectorAll('#page-termos .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderTbl('termos');}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MODAL EQUIP
+// ═══════════════════════════════════════════════════════════════════════════
+const CAMPOS={
+  pc:[{id:'tomb',l:'Tombamento'},{id:'tipo',l:'Tipo',sel:['Desktop','Notebook','All-in-One']},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'proc',l:'Processador'},{id:'ram',l:'RAM'},{id:'arm',l:'Armazenamento'},{id:'so',l:'Sistema Operacional'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento Assinado',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
+  imp:[{id:'tomb',l:'Tombamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'tipo',l:'Tipo',sel:['Laser','Jato de tinta','Multifuncional','Térmica']},{id:'conexao',l:'Conexão',sel:['USB','Rede','WiFi','USB/WiFi','Rede/WiFi']},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento Assinado',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
+  eq:[{id:'tomb',l:'Tombamento'},{id:'tipo_eq',l:'Tipo de Equipamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento Assinado',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
+};
+function openMEQ(tipo,idx=null){
+  S.meqTipo=tipo;S.meqIdx=idx;
+  const campos=CAMPOS[tipo];const obj=idx!==null?db[tipo][idx]:{};
+  document.getElementById('meq-title').textContent=idx!==null?'Editar Equipamento':'Novo Equipamento';
+  document.getElementById('meq-form').innerHTML=campos.map(c=>{const v=obj[c.id]||'';let inp='';if(c.sel)inp=`<select id="mf-${c.id}">${c.sel.map(o=>`<option${o===v?' selected':''}>${o}</option>`).join('')}</select>`;else if(c.type==='ta')inp=`<textarea id="mf-${c.id}">${v}</textarea>`;else inp=`<input type="${c.type||'text'}" id="mf-${c.id}" value="${v}">`;return`<div class="fg${c.full?' full':''}"><label>${c.l}</label>${inp}</div>`;}).join('');
+  document.getElementById('modal-equip').style.display='flex';
+}
+async function salvarEquip(){
+  const t=S.meqTipo;const campos=CAMPOS[t];const obj={};
+  campos.forEach(c=>{const el=document.getElementById('mf-'+c.id);obj[c.id]=el?el.value:'';});
+  if(!obj.tomb){toast('Informe o tombamento.','err');return;}
+  showLoading('Salvando…');
+  const abaMap={pc:'Computadores',imp:'Impressoras',eq:'Equipamentos Diversos'};
+  if(S.meqIdx!==null) db[t][S.meqIdx]=obj; else db[t].push(obj);
+  await gravarNoSheets(abaMap[t], obj);
+  hideLoading();closeModal('modal-equip');renderTbl(t);renderDash();
+  toast('Equipamento salvo!','ok');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MODAL MANUTENÇÃO
+// ═══════════════════════════════════════════════════════════════════════════
+function openMMAN(){
+  document.getElementById('man-data').value=new Date().toISOString().split('T')[0];
+  document.getElementById('man-tomb').value='';
+  document.getElementById('man-found').style.display='none';
+  document.getElementById('modal-man').style.display='flex';
+}
+function lookupMan(v){
+  const eq=todos().find(e=>e.tomb.toUpperCase()===v.toUpperCase());
+  const box=document.getElementById('man-found');
+  if(eq){document.getElementById('man-found-box').innerHTML=`<strong>${eq.tomb}</strong> — ${eq.modelo||eq.tipo_eq||eq.marca} | Setor: ${eq.setor} | Resp.: ${eq.resp}`;box.style.display='';}
+  else box.style.display='none';
+}
+async function salvarMan(){
+  const tomb=document.getElementById('man-tomb').value.trim();
+  if(!tomb){toast('Informe o tombamento.','err');return;}
+  const m={data:document.getElementById('man-data').value,tomb,tipo:document.getElementById('man-tipo').value,desc:document.getElementById('man-desc').value,custo:parseFloat(document.getElementById('man-custo').value)||0,tec:document.getElementById('man-tec').value,status:document.getElementById('man-status').value,obs:document.getElementById('man-obs').value};
+  showLoading('Salvando…');
+  db.man.push(m);
+  const src=[...db.pc,...db.imp,...db.eq].find(e=>e.tomb.toUpperCase()===tomb.toUpperCase());
+  if(src){ src.ult_man=m.data; const abaMap={'Computador':'Computadores','Impressora':'Impressoras','Equip. Diversos':'Equipamentos Diversos'}; const cat=db.pc.includes(src)?'Computadores':db.imp.includes(src)?'Impressoras':'Equipamentos Diversos'; await gravarNoSheets(cat,src); }
+  await gravarManutencaoSheets(m);
+  saveLocal();hideLoading();closeModal('modal-man');renderTbl('man');renderDash();
+  toast('Manutenção registrada!','ok');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════════════════════
+function renderCfg(){
+  document.getElementById('cfg-url').value=SCRIPT_URL||'';
+  document.getElementById('cfg-setores').innerHTML=Object.entries(S.cfg.setores).map(([s,m])=>`<div class="cfg-row"><label>${s}</label><div style="display:flex;align-items:center;gap:6px"><input type="number" id="cs-${s.replace(/ /g,'_')}" value="${m}" min="1" max="60"> <span style="font-size:12px;color:var(--cinza3)">meses</span></div></div>`).join('');
+  document.getElementById('msg-man').value=S.cfg.msgMan;
+  document.getElementById('msg-termo').value=S.cfg.msgTermo;
+}
+async function salvarCfgSetores(){
+  Object.keys(S.cfg.setores).forEach(s=>{const el=document.getElementById('cs-'+s.replace(/ /g,'_'));if(el)S.cfg.setores[s]=parseInt(el.value)||12;});
+  const cfgPayload={};
+  Object.entries(S.cfg.setores).forEach(([k,v])=>cfgPayload['setor_'+k]=String(v));
+  saveLocal();await gravarConfigSheets(cfgPayload);
+  toast('Configurações salvas!','ok');
+}
+async function salvarMensagens(){
+  S.cfg.msgMan=document.getElementById('msg-man').value;
+  S.cfg.msgTermo=document.getElementById('msg-termo').value;
+  saveLocal();
+  await gravarConfigSheets({msg_manutencao:S.cfg.msgMan,msg_termo:S.cfg.msgTermo});
+  toast('Mensagens salvas!','ok');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════════════════════
+function closeModal(id){document.getElementById(id).style.display='none';}
+function toast(msg,tipo='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${tipo} show`;setTimeout(()=>t.classList.remove('show'),3500);}
+</script>
+
+<!-- MOBILE BOTTOM NAV -->
+<div id="mobile-nav">
+  <button class="mn-item active" onclick="goPageM('dashboard',this)">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </button>
+  <button class="mn-item" onclick="goPageM('computadores',this)">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    PCs
+  </button>
+  <button class="mn-item" onclick="goPageM('manutencao',this)">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+    Manutenção
+    <span class="mn-badge" id="mn-badge-man" style="display:none">!</span>
+  </button>
+  <button class="mn-item" onclick="goPageM('termos',this)">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Termos
+    <span class="mn-badge" id="mn-badge-termos" style="display:none">!</span>
+  </button>
+  <button class="mn-item" onclick="goPageM('config',this)">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41"/></svg>
+    Config
+  </button>
+</div>
+
+<script>
+function goPageM(pg, el) {
+  goPage(pg, null);
+  document.querySelectorAll('.mn-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+// Sync mobile badges with main badges
+const _origRenderDash = renderDash;
+renderDash = function() {
+  _origRenderDash();
+  const man = document.getElementById('badge-man')?.textContent;
+  const ter = document.getElementById('badge-termos')?.textContent;
+  const mb1 = document.getElementById('mn-badge-man');
+  const mb2 = document.getElementById('mn-badge-termos');
+  if (mb1) mb1.style.display = man && man !== '0' ? '' : 'none';
+  if (mb2) mb2.style.display = ter && ter !== '0' ? '' : 'none';
+};
+</script>
+
+</body>
+</html>
+<!-- MOBILE CSS INJECTED -->
