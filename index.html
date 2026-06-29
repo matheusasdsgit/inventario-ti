@@ -747,7 +747,7 @@ function setFT(ft,el){S.ftTermos=ft;document.querySelectorAll('#page-termos .tab
 // MODAL EQUIP
 // ═══════════════════════════════════════════════════════════════════════════
 const CAMPOS={
-  pc:[{id:'tomb',l:'Tombamento'},{id:'tipo',l:'Tipo',sel:['Desktop','Notebook','All-in-One']},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'proc',l:'Processador'},{id:'ram',l:'RAM'},{id:'arm',l:'Armazenamento'},{id:'so',l:'Sistema Operacional'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento Assinado',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
+  pc:[{id:'tomb',l:'Tombamento'},{id:'tipo',l:'Tipo',sel:['Desktop','Notebook','All-in-One','Monitor','Outro']},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'proc',l:'Processador'},{id:'ram',l:'RAM'},{id:'arm',l:'Armazenamento'},{id:'so',l:'Sistema Operacional'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento Assinado',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
   imp:[{id:'tomb',l:'Tombamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'tipo',l:'Tipo',sel:['Laser','Jato de tinta','Multifuncional','Térmica']},{id:'conexao',l:'Conexão',sel:['USB','Rede','WiFi','USB/WiFi','Rede/WiFi']},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento Assinado',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
   eq:[{id:'tomb',l:'Tombamento'},{id:'tipo_eq',l:'Tipo de Equipamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento Assinado',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
 };
@@ -757,10 +757,53 @@ function openMEQ(tipo,idx=null){
   document.getElementById('meq-title').textContent=idx!==null?'Editar Equipamento':'Novo Equipamento';
   document.getElementById('meq-form').innerHTML=campos.map(c=>{const v=obj[c.id]||'';let inp='';if(c.sel)inp=`<select id="mf-${c.id}">${c.sel.map(o=>`<option${o===v?' selected':''}>${o}</option>`).join('')}</select>`;else if(c.type==='ta')inp=`<textarea id="mf-${c.id}">${v}</textarea>`;else inp=`<input type="${c.type||'text'}" id="mf-${c.id}" value="${v}">`;return`<div class="fg${c.full?' full':''}"><label>${c.l}</label>${inp}</div>`;}).join('');
   document.getElementById('modal-equip').style.display='flex';
+  // Adiciona listener para campo "Outro" em selects que tenham essa opção
+  document.querySelectorAll('#meq-form select').forEach(sel => {
+    const opts = Array.from(sel.options).map(o=>o.value);
+    if(opts.includes('Outro')) {
+      const outroId = 'outro-' + sel.id;
+      // Cria campo de texto oculto logo após o select
+      const wrapper = sel.parentElement;
+      let inp = document.getElementById(outroId);
+      if(!inp) {
+        inp = document.createElement('input');
+        inp.type = 'text';
+        inp.id = outroId;
+        inp.placeholder = 'Digite o tipo…';
+        inp.style.cssText = 'margin-top:6px;display:none;padding:9px 12px;border:1px solid var(--cinza2);border-radius:var(--radius);font-size:13px;width:100%;outline:none;';
+        wrapper.appendChild(inp);
+      }
+      // Mostra/oculta campo extra
+      const toggle = () => {
+        inp.style.display = sel.value === 'Outro' ? 'block' : 'none';
+        if(sel.value !== 'Outro') inp.value = '';
+      };
+      sel.addEventListener('change', toggle);
+      // Se valor atual é "Outro" ou não está na lista, mostra o campo
+      if(sel.value === 'Outro' || (sel.value && !opts.includes(sel.value))) {
+        // Valor customizado — seleciona "Outro" e preenche o campo
+        if(!opts.includes(sel.value)) {
+          inp.value = sel.value;
+          sel.value = 'Outro';
+        }
+        inp.style.display = 'block';
+      }
+    }
+  });
 }
 async function salvarEquip(){
   const t=S.meqTipo;const campos=CAMPOS[t];const obj={};
-  campos.forEach(c=>{const el=document.getElementById('mf-'+c.id);obj[c.id]=el?el.value:'';});
+  campos.forEach(c=>{
+    const el=document.getElementById('mf-'+c.id);
+    if(!el){ obj[c.id]=''; return; }
+    // Se é um select com opção "Outro" e "Outro" está selecionado, pega o campo de texto
+    if(el.tagName==='SELECT' && el.value==='Outro') {
+      const outroEl = document.getElementById('outro-mf-'+c.id);
+      obj[c.id] = outroEl && outroEl.value.trim() ? outroEl.value.trim() : 'Outro';
+    } else {
+      obj[c.id] = el.value;
+    }
+  });
   if(!obj.tomb){toast('Informe o tombamento.','err');return;}
   showLoading('Salvando…');
   const abaMap={pc:'Computadores',imp:'Impressoras',eq:'Equipamentos Diversos'};
