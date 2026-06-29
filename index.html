@@ -506,10 +506,12 @@ function saveLocal() {
   localStorage.setItem('inv_cfg', JSON.stringify(S.cfg));
 }
 function loadLocal() {
-  db.pc  = JSON.parse(localStorage.getItem('inv_pc')  || 'null') || demoPC();
-  db.imp = JSON.parse(localStorage.getItem('inv_imp') || 'null') || demoIMP();
-  db.eq  = JSON.parse(localStorage.getItem('inv_eq')  || 'null') || demoEQ();
-  db.man = JSON.parse(localStorage.getItem('inv_man') || 'null') || demoMAN();
+  // Se tem Sheets configurado, começa vazio (dados vêm do Sheets)
+  const useDemo = !SCRIPT_URL;
+  db.pc  = JSON.parse(localStorage.getItem('inv_pc')  || 'null') || (useDemo ? demoPC()  : []);
+  db.imp = JSON.parse(localStorage.getItem('inv_imp') || 'null') || (useDemo ? demoIMP() : []);
+  db.eq  = JSON.parse(localStorage.getItem('inv_eq')  || 'null') || (useDemo ? demoEQ()  : []);
+  db.man = JSON.parse(localStorage.getItem('inv_man') || 'null') || (useDemo ? demoMAN() : []);
   const c = JSON.parse(localStorage.getItem('inv_cfg') || 'null');
   if (c) S.cfg = {...S.cfg, ...c};
 }
@@ -524,10 +526,11 @@ async function carregarDoSheets() {
       apiGet({action:'read', aba:'Manutencao'}),
       apiGet({action:'config'}),
     ]);
-    if (pc)  db.pc  = pc;
-    if (imp) db.imp = imp;
-    if (eq)  db.eq  = eq;
-    if (man) db.man = man;
+    // Sempre sobrescreve com dados do Sheets (fonte de verdade)
+    db.pc  = Array.isArray(pc)  ? pc  : [];
+    db.imp = Array.isArray(imp) ? imp : [];
+    db.eq  = Array.isArray(eq)  ? eq  : [];
+    db.man = Array.isArray(man) ? man : [];
     if (cfg) {
       // Reconstruir setores do config
       const setores = {};
