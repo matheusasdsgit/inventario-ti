@@ -764,10 +764,20 @@ async function salvarEquip(){
   if(!obj.tomb){toast('Informe o tombamento.','err');return;}
   showLoading('Salvando…');
   const abaMap={pc:'Computadores',imp:'Impressoras',eq:'Equipamentos Diversos'};
-  if(S.meqIdx!==null) db[t][S.meqIdx]=obj; else db[t].push(obj);
-  await gravarNoSheets(abaMap[t], obj);
+  const isEdit = S.meqIdx !== null;
+  if(isEdit) db[t][S.meqIdx]=obj; else db[t].push(obj);
+  // Usa 'update' para edição e 'insert' para novo
+  if(SCRIPT_URL){
+    try {
+      await fetch(SCRIPT_URL, {
+        method:'POST',
+        body: JSON.stringify({ action: isEdit ? 'update' : 'insert', aba: abaMap[t], data: obj })
+      });
+    } catch(e) { toast('Aviso: erro ao sincronizar com Sheets.','err'); }
+  }
+  saveLocal();
   hideLoading();closeModal('modal-equip');renderTbl(t);renderDash();
-  toast('Equipamento salvo!','ok');
+  toast(isEdit ? 'Equipamento atualizado!' : 'Equipamento cadastrado!','ok');
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
