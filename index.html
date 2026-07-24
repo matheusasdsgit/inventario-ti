@@ -313,9 +313,12 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle;}
     <button class="ni" onclick="goPage('computadores',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Computadores</button>
     <button class="ni" onclick="goPage('impressoras',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><rect x="6" y="17" width="12" height="5" rx="1"/><path d="M6 13H4a2 2 0 00-2 2v3h4v-3"/><path d="M18 13h2a2 2 0 012 2v3h-4v-3"/></svg>Impressoras</button>
     <button class="ni" onclick="goPage('diversos',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Equip. Diversos</button>
+    <button class="ni" onclick="goPage('monitores',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Monitores</button>
     <div class="ns">Gestão</div>
     <button class="ni" onclick="goPage('manutencao',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>Manutenções<span class="nc" id="badge-man">0</span></button>
     <button class="ni" onclick="goPage('termos',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Termos<span class="nc" id="badge-termos">0</span></button>
+    <div class="ns">Relatórios</div>
+    <button class="ni" onclick="goPage('relatorios',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="18" y1="13" x2="6" y2="13"/><line x1="18" y1="17" x2="6" y2="17"/><line x1="10" y1="9" x2="6" y2="9"/></svg>Relatórios</button>
     <div class="ns">Sistema</div>
     <button class="ni" onclick="goPage('config',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41"/></svg>Configurações</button>
   </div>
@@ -346,6 +349,58 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle;}
       </div>
     </div>
 
+
+    <!-- RELATÓRIOS -->
+    <div class="page" id="page-relatorios">
+      <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:20px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:14px">🔍 Filtros</div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+          <div class="fg" style="flex:1;min-width:140px">
+            <label>Período</label>
+            <select id="rel-periodo" onchange="toggleRelCustom()">
+              <option value="mes_atual">Mês atual</option>
+              <option value="mes_passado">Mês passado</option>
+              <option value="trimestre">Último trimestre</option>
+              <option value="semestre">Último semestre</option>
+              <option value="ano_atual">Ano atual</option>
+              <option value="custom">Personalizado</option>
+            </select>
+          </div>
+          <div class="fg" id="rel-de-wrap" style="display:none;flex:1;min-width:120px">
+            <label>De</label><input type="date" id="rel-de">
+          </div>
+          <div class="fg" id="rel-ate-wrap" style="display:none;flex:1;min-width:120px">
+            <label>Até</label><input type="date" id="rel-ate">
+          </div>
+          <div class="fg" style="flex:1;min-width:140px">
+            <label>Tipo de manutenção</label>
+            <select id="rel-tipo">
+              <option value="">Todos</option>
+              <option>Preventiva</option><option>Corretiva</option>
+              <option>Formatação</option><option>Upgrade</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="gerarRel()">Gerar relatório</button>
+          <button class="btn btn-ghost" onclick="exportarRel()">⬇️ Exportar CSV</button>
+        </div>
+      </div>
+      <div class="kpi-grid" id="rel-kpis" style="display:none"></div>
+      <div id="rel-graficos" style="display:none;display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px">
+          <div style="font-size:14px;font-weight:700;margin-bottom:14px">💰 Custo por tipo</div>
+          <div id="rel-chart-tipo"></div>
+        </div>
+        <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px">
+          <div style="font-size:14px;font-weight:700;margin-bottom:14px">🖥️ Equipamentos por categoria</div>
+          <div id="rel-chart-cat"></div>
+        </div>
+      </div>
+      <div class="tc" id="rel-tabela" style="display:none">
+        <div class="ttb"><h3 id="rel-tit">Manutenções no período</h3></div>
+        <div id="rel-tbody"></div>
+      </div>
+    </div>
+
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div class="kpi-grid" id="kpi-grid"></div>
@@ -365,6 +420,12 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle;}
     <!-- DIVERSOS -->
     <div class="page" id="page-diversos">
       <div class="tc"><div class="ttb"><h3>Equipamentos Diversos</h3><div class="sb mla"><svg width="14" height="14" fill="none" stroke="#90A4AE" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" placeholder="Buscar tombamento, tipo…" oninput="filtrar('eq',this.value)"></div></div><div id="tbl-eq"></div></div>
+    </div>
+
+    
+    <!-- MONITORES -->
+    <div class="page" id="page-monitores">
+      <div class="tc"><div class="ttb"><h3>Monitores</h3><div class="sb mla"><svg width="14" height="14" fill="none" stroke="#90A4AE" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" placeholder="Buscar tombamento, setor…" oninput="filtrar('mon',this.value)"></div></div><div id="tbl-mon"></div></div>
     </div>
 
     <!-- MANUTENÇÃO -->
@@ -402,6 +463,7 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle;}
           <h4>⚙️ Intervalo de manutenção por setor</h4>
           <div id="cfg-setores"></div>
           <button class="btn btn-primary" style="margin-top:14px;width:100%" onclick="salvarCfgSetores()">Salvar</button>
+          <button class="btn btn-ghost" style="margin-top:8px;width:100%" onclick="abrirModalSetor()">+ Novo setor</button>
         </div>
 
         <div class="cfg-card" style="grid-column:1/-1">
@@ -475,7 +537,7 @@ const S = {
   }
 };
 const USERS = { suporte: { senha:'suporte@2025', nome:'Suporte T.I.' } };
-const db = { pc:[], imp:[], eq:[], man:[] };
+const db = { pc:[], imp:[], eq:[], man:[], mon:[] };
 
 // ═══════════════════════════════════════════════════════════════════════════
 // API — Google Apps Script
@@ -488,10 +550,15 @@ async function apiGet(params) {
 }
 async function apiPost(body) {
   if (!SCRIPT_URL) return null;
-  const r = await fetch(SCRIPT_URL, {
-    method: 'POST',
-    body: JSON.stringify(body)
-  });
+  // Usa GET para evitar problemas de CORS com POST no Apps Script
+  const { action, aba, data, tombamento, config } = body;
+  const params = { action };
+  if (aba)        params.aba  = aba;
+  if (tombamento) params.tomb = tombamento;
+  if (data)       params.data = encodeURIComponent(JSON.stringify(data));
+  if (config)     params.data = encodeURIComponent(JSON.stringify(config));
+  const url = SCRIPT_URL + '?' + new URLSearchParams(params);
+  const r   = await fetch(url);
   return r.json();
 }
 
@@ -503,12 +570,14 @@ function saveLocal() {
   localStorage.setItem('inv_imp', JSON.stringify(db.imp));
   localStorage.setItem('inv_eq',  JSON.stringify(db.eq));
   localStorage.setItem('inv_man', JSON.stringify(db.man));
+  localStorage.setItem('inv_mon', JSON.stringify(db.mon||[]));
   localStorage.setItem('inv_cfg', JSON.stringify(S.cfg));
 }
 function loadLocal() {
   // Se tem Sheets configurado, começa vazio (dados vêm do Sheets)
   const useDemo = !SCRIPT_URL;
   db.pc  = JSON.parse(localStorage.getItem('inv_pc')  || 'null') || (useDemo ? demoPC()  : []);
+  db.mon = JSON.parse(localStorage.getItem('inv_mon') || 'null') || [];
   db.imp = JSON.parse(localStorage.getItem('inv_imp') || 'null') || (useDemo ? demoIMP() : []);
   db.eq  = JSON.parse(localStorage.getItem('inv_eq')  || 'null') || (useDemo ? demoEQ()  : []);
   db.man = JSON.parse(localStorage.getItem('inv_man') || 'null') || (useDemo ? demoMAN() : []);
@@ -524,13 +593,15 @@ async function carregarDoSheets() {
       apiGet({action:'read', aba:'Impressoras'}),
       apiGet({action:'read', aba:'Equipamentos Diversos'}),
       apiGet({action:'read', aba:'Manutencao'}),
+      apiGet({action:'read', aba:'Monitores'}),
       apiGet({action:'config'}),
     ]);
-    // Sempre sobrescreve com dados do Sheets (fonte de verdade)
+
     db.pc  = Array.isArray(pc)  ? pc  : [];
     db.imp = Array.isArray(imp) ? imp : [];
     db.eq  = Array.isArray(eq)  ? eq  : [];
     db.man = Array.isArray(man) ? man : [];
+    db.mon = Array.isArray(mon) ? mon : [];
     if (cfg) {
       // Reconstruir setores do config
       const setores = {};
@@ -645,15 +716,17 @@ function goPage(pg, el) {
   document.getElementById('page-'+pg).classList.add('active');
   if(el) el.classList.add('active');
   S.page = pg;
-  const T={dashboard:'Dashboard',computadores:'Computadores',impressoras:'Impressoras',diversos:'Equip. Diversos',manutencao:'Manutenções',termos:'Termos',config:'Configurações'};
+  const T={dashboard:'Dashboard',relatorios:'Relatórios',computadores:'Computadores',impressoras:'Impressoras',diversos:'Equip. Diversos',monitores:'Monitores',manutencao:'Manutenções',termos:'Termos',config:'Configurações'};
   document.getElementById('ph-title').innerHTML=`${T[pg]} <span class="pb">SUPORTE | T.I.</span>`;
   document.getElementById('ph-bread').textContent=T[pg];
   const act=document.getElementById('ph-actions'); act.innerHTML='';
   if(pg==='computadores') act.innerHTML='<button class="btn btn-primary" onclick="openMEQ(\'pc\')">+ Novo computador</button>';
+  if(pg==='monitores') act.innerHTML='<button class="btn btn-primary" onclick="openMEQ(\'mon\')">+ Novo monitor</button>';
   if(pg==='impressoras')  act.innerHTML='<button class="btn btn-primary" onclick="openMEQ(\'imp\')">+ Nova impressora</button>';
   if(pg==='diversos')     act.innerHTML='<button class="btn btn-primary" onclick="openMEQ(\'eq\')">+ Novo equipamento</button>';
   if(pg==='manutencao')   act.innerHTML='<button class="btn btn-primary" onclick="openMMAN()">+ Registrar manutenção</button>';
   if(pg==='computadores') renderTbl('pc');
+  if(pg==='monitores') renderTbl('mon');
   if(pg==='impressoras')  renderTbl('imp');
   if(pg==='diversos')     renderTbl('eq');
   if(pg==='manutencao')   renderTbl('man');
@@ -690,7 +763,7 @@ function renderDash(){
   document.getElementById('badge-man').textContent=venc+p30;
   document.getElementById('badge-termos').textContent=tPend;
   document.getElementById('kpi-grid').innerHTML=[
-    {l:'Total de ativos',v:total,s:'equipamentos cadastrados',c:''},
+    {l:'Total Cadastrado',v:total,s:'equipamentos cadastrados',c:''},
     {l:'Ativos',v:ativos,s:'em operação',c:'green'},
     {l:'Em manutenção',v:emMan,s:'aguardando serviço',c:'amber'},
     {l:'Termos pendentes',v:tPend,s:'aguardando assinatura',c:'red'},
@@ -698,7 +771,7 @@ function renderDash(){
     {l:'Vence em 30 dias',v:p30,s:'equipamentos',c:'amber'},
     {l:'Computadores',v:db.pc.length,s:'',c:''},
     {l:'Impressoras',v:db.imp.length,s:'',c:''},
-    {l:'Equip. Diversos',v:db.eq.length,s:'',c:'cyan'},
+    {l:'Equip. Diversos',v:db.eq.length,s:'',c:'cyan'},{l:'Monitores',v:(db.mon||[]).length,s:'',c:''},
   ].map(k=>`<div class="kc ${k.c}"><div class="kl">${k.l}</div><div class="kv">${k.v}</div>${k.s?`<div class="ks">${k.s}</div>`:''}</div>`).join('');
   let html='';
   if(aM.length){
@@ -736,7 +809,7 @@ function renderTbl(tipo,f=''){
   if(tipo==='man'){
     const rows=db.man.filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
     const enr=rows.map(m=>{const eq=todos().find(e=>e.tomb===m.tomb)||{};return{...m,modelo:eq.modelo||eq.tipo_eq||'—',setor:eq.setor||'—',resp_:eq.resp||'—'};});
-    el.innerHTML=enr.length?`<table><thead><tr><th>Data</th><th>Tombamento</th><th>Equipamento</th><th>Setor</th><th>Responsável</th><th>Tipo</th><th>Técnico</th><th>Custo</th><th>Status</th></tr></thead><tbody>${enr.map(e=>`<tr><td>${fmt(e.data)}</td><td><strong>${e.tomb}</strong></td><td>${e.modelo}</td><td>${e.setor}</td><td>${e.resp_}</td><td>${e.tipo}</td><td>${e.tec||'—'}</td><td>${Number(e.custo)>0?'R$ '+Number(e.custo).toFixed(2).replace('.',','):'—'}</td><td>${pill(e.status)}</td></tr>`).join('')}</tbody></table>`:empty();
+    el.innerHTML=enr.length?`<table><thead><tr><th>Data</th><th>Tombamento</th><th>Equipamento</th><th>Setor</th><th>Responsável</th><th>Tipo</th><th>Técnico</th><th>Custo</th><th>Status</th><th></th></tr></thead><tbody>${enr.map(e=>`<tr><td>${fmt(e.data)}</td><td><strong>${e.tomb}</strong></td><td>${e.modelo}</td><td>${e.setor}</td><td>${e.resp_}</td><td>${e.tipo}</td><td>${e.tec||'—'}</td><td>${Number(e.custo)>0?'R$ '+Number(e.custo).toFixed(2).replace('.',','):'—'}</td><td>${pill(e.status)}</td><td><button class="btn btn-ghost btn-sm" onclick="editarMan(${db.man.indexOf(m)})">✏️</button></td></tr>`).join('')}</tbody></table>`:empty();
   }
   if(tipo==='termos'){
     const ft=S.ftTermos;const all=todos().filter(e=>ft==='todos'||e.t_status?.toLowerCase()===ft);
@@ -750,9 +823,22 @@ function setFT(ft,el){S.ftTermos=ft;document.querySelectorAll('#page-termos .tab
 // MODAL EQUIP
 // ═══════════════════════════════════════════════════════════════════════════
 const CAMPOS={
-  pc:[{id:'tomb',l:'Tombamento'},{id:'tipo',l:'Tipo',sel:['Desktop','Notebook','All-in-One','Monitor','Outro']},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'proc',l:'Processador'},{id:'ram',l:'RAM'},{id:'arm',l:'Armazenamento'},{id:'so',l:'Sistema Operacional'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento Assinado',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
-  imp:[{id:'tomb',l:'Tombamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'tipo',l:'Tipo',sel:['Laser','Jato de tinta','Multifuncional','Térmica']},{id:'conexao',l:'Conexão',sel:['USB','Rede','WiFi','USB/WiFi','Rede/WiFi']},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento Assinado',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
-  eq:[{id:'tomb',l:'Tombamento'},{id:'tipo_eq',l:'Tipo de Equipamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento Assinado',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
+  pc:[{id:'tomb',l:'Tombamento'},{id:'tipo',l:'Tipo',sel:['Desktop','Notebook','All-in-One','Monitor','Outro']},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'proc',l:'Processador'},{id:'ram',l:'RAM'},{id:'arm',l:'Armazenamento'},{id:'so',l:'Sistema Operacional'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
+  imp:[{id:'tomb',l:'Tombamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'tipo',l:'Tipo',sel:['Laser','Jato de tinta','Multifuncional','Térmica']},{id:'conexao',l:'Conexão',sel:['USB','Rede','WiFi','USB/WiFi','Rede/WiFi']},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
+  mon:[
+    {id:'tomb',l:'Tombamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},
+    {id:'polegadas',l:'Polegadas'},{id:'tipo_tela',l:'Tipo',sel:['LED','IPS','VA','OLED','TN']},
+    {id:'conexao',l:'Conexão',sel:['HDMI','VGA','DisplayPort','HDMI/VGA','HDMI/DisplayPort','Múltiplas']},
+    {id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},
+    {id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},
+    {id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},
+    {id:'ult_man',l:'Última Manutenção',type:'date'},
+    {id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},
+    {id:'t_data',l:'Data da Assinatura',type:'date'},
+    {id:'t_link',l:'Link do Documento',full:true},
+    {id:'obs',l:'Observações',type:'ta',full:true},
+  ],
+  eq:[{id:'tomb',l:'Tombamento'},{id:'tipo_eq',l:'Tipo de Equipamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
 };
 function openMEQ(tipo,idx=null){
   S.meqTipo=tipo;S.meqIdx=idx;
@@ -859,7 +945,7 @@ async function salvarMan(){
 // ═══════════════════════════════════════════════════════════════════════════
 function renderCfg(){
   document.getElementById('cfg-url').value=SCRIPT_URL||'';
-  document.getElementById('cfg-setores').innerHTML=Object.entries(S.cfg.setores).map(([s,m])=>`<div class="cfg-row"><label>${s}</label><div style="display:flex;align-items:center;gap:6px"><input type="number" id="cs-${s.replace(/ /g,'_')}" value="${m}" min="1" max="60"> <span style="font-size:12px;color:var(--cinza3)">meses</span></div></div>`).join('');
+  document.getElementById('cfg-setores').innerHTML=Object.entries(S.cfg.setores).map(([s,m])=>`<div class="cfg-row"><label style="cursor:pointer" onclick="abrirModalSetor('${s}',${m})" title="Clique para editar">✏️ ${s}</label><div style="display:flex;align-items:center;gap:6px"><input type="number" id="cs-${s.replace(/ /g,'_')}" value="${m}" min="1" max="60"> <span style="font-size:12px;color:var(--cinza3)">meses</span></div></div>`).join('');
   document.getElementById('msg-man').value=S.cfg.msgMan;
   document.getElementById('msg-termo').value=S.cfg.msgTermo;
 }
@@ -881,6 +967,354 @@ async function salvarMensagens(){
 // ═══════════════════════════════════════════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MONITORES
+// ═══════════════════════════════════════════════════════════════════════════
+if(!db.mon) db.mon = [];
+
+// Renderizar tabela de monitores
+const _origRenderTbl = renderTbl;
+renderTbl = function(tipo, f='') {
+  if(tipo !== 'mon') return _origRenderTbl(tipo, f);
+  const q = f.toLowerCase();
+  const el = document.getElementById('tbl-mon');
+  if(!el) return;
+  const rows = (db.mon||[]).filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
+  el.innerHTML = rows.length ? `<table><thead><tr>
+    <th>Tombamento</th><th>Marca</th><th>Modelo</th><th>Polegadas</th><th>Tipo</th>
+    <th>Conexão</th><th>Setor</th><th>Responsável</th><th>Status</th>
+    <th>Próx. Man.</th><th>Termo</th><th>WA</th><th></th>
+  </tr></thead><tbody>${rows.map(e=>{
+    const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);
+    const pmH=pm?`<span style="color:${d<0?'var(--vermelho)':d<=30?'var(--amarelo)':'inherit'}">${fmt(pm.toISOString())}</span>`:'—';
+    const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:pm?fmt(pm.toISOString()):'em breve'});
+    return `<tr>
+      <td><strong>${e.tomb}</strong></td><td>${e.marca}</td><td>${e.modelo}</td>
+      <td>${e.polegadas||'—'}"</td><td>${e.tipo_tela||'—'}</td><td>${e.conexao||'—'}</td>
+      <td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td>
+      <td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="openMEQ('mon',${(db.mon||[]).indexOf(e)})">✏️</button></td>
+    </tr>`;
+  }).join('')}</tbody></table>` : empty();
+};
+
+// Incluir monitores no todos()
+const _origTodos = todos;
+todos = function() {
+  return [..._origTodos(), ...(db.mon||[]).map(e=>({...e,_cat:'Monitor'}))];
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MANUTENÇÃO AUTOMÁTICA AO MUDAR STATUS
+// ═══════════════════════════════════════════════════════════════════════════
+const _origSalvarEquip = salvarEquip;
+salvarEquip = async function() {
+  const t = S.meqTipo;
+  const campos = CAMPOS[t];
+  const novoObj = {};
+  campos.forEach(c => {
+    const el = document.getElementById('mf-'+c.id);
+    if(!el){ novoObj[c.id]=''; return; }
+    if(el.tagName==='SELECT' && el.value==='Outro') {
+      const outroEl = document.getElementById('outro-mf-'+c.id);
+      novoObj[c.id] = outroEl && outroEl.value.trim() ? outroEl.value.trim() : 'Outro';
+    } else { novoObj[c.id] = el.value; }
+  });
+  if(!novoObj.tomb){ toast('Informe o tombamento.','err'); return; }
+
+  const isEdit    = S.meqIdx !== null;
+  const objAntigo = isEdit ? db[t][S.meqIdx] : null;
+  const abaMap    = {pc:'Computadores',imp:'Impressoras',eq:'Equipamentos Diversos',mon:'Monitores'};
+
+  // Auto registro de manutenção ao mudar status para "Manutenção"
+  if(isEdit && objAntigo && objAntigo.status !== 'Manutenção' && novoObj.status === 'Manutenção') {
+    const regMan = {
+      data: new Date().toISOString().split('T')[0],
+      tomb: novoObj.tomb, tipo: '', desc: '', custo: 0,
+      tec: '', status: 'Em andamento', obs: ''
+    };
+    db.man.push(regMan);
+    if(SCRIPT_URL) {
+      try {
+        const params = new URLSearchParams({action:'insert', aba:'Manutencao', data: encodeURIComponent(JSON.stringify(regMan))});
+        await fetch(SCRIPT_URL + '?' + params);
+      } catch(e) {}
+    }
+    toast('Manutenção registrada automaticamente!','ok');
+  }
+
+  if(isEdit) db[t][S.meqIdx] = novoObj; else db[t].push(novoObj);
+
+  showLoading('Salvando…');
+  if(SCRIPT_URL) {
+    try {
+      const params = new URLSearchParams({
+        action: isEdit ? 'update' : 'insert',
+        aba: abaMap[t],
+        data: encodeURIComponent(JSON.stringify(novoObj))
+      });
+      await fetch(SCRIPT_URL + '?' + params);
+    } catch(e) { toast('Erro ao sincronizar.','err'); }
+  }
+  saveLocal();
+  hideLoading(); closeModal('modal-equip'); renderTbl(t); renderDash();
+  toast(isEdit ? 'Equipamento atualizado!' : 'Equipamento cadastrado!','ok');
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EDITAR MANUTENÇÃO
+// ═══════════════════════════════════════════════════════════════════════════
+let manEditIdx = null;
+
+function editarMan(idx) {
+  manEditIdx = idx;
+  const m = db.man[idx];
+  if(!m) return;
+  document.getElementById('man-data').value    = m.data || '';
+  document.getElementById('man-tomb').value    = m.tomb || '';
+  document.getElementById('man-tipo').value    = m.tipo || 'Preventiva';
+  document.getElementById('man-custo').value   = m.custo || '';
+  document.getElementById('man-tec').value     = m.tec || '';
+  document.getElementById('man-status').value  = m.status || 'Em andamento';
+  document.getElementById('man-desc').value    = m.desc || '';
+  document.getElementById('man-obs').value     = m.obs || '';
+  lookupMan(m.tomb);
+  document.getElementById('modal-man').style.display = 'flex';
+}
+
+// Override salvarMan para suportar edição e auto-atualizar equipamento ao concluir
+const _origSalvarMan = salvarMan;
+salvarMan = async function() {
+  const tomb   = document.getElementById('man-tomb').value.trim();
+  if(!tomb){ toast('Informe o tombamento.','err'); return; }
+  const novoStatus = document.getElementById('man-status').value;
+  const m = {
+    data:   document.getElementById('man-data').value,
+    tomb,
+    tipo:   document.getElementById('man-tipo').value,
+    desc:   document.getElementById('man-desc').value,
+    custo:  parseFloat(document.getElementById('man-custo').value)||0,
+    tec:    document.getElementById('man-tec').value,
+    status: novoStatus,
+    obs:    document.getElementById('man-obs').value,
+  };
+
+  const isEdit = manEditIdx !== null;
+  showLoading('Salvando…');
+
+  if(isEdit) {
+    const statusAntigo = db.man[manEditIdx]?.status;
+    db.man[manEditIdx] = m;
+
+    // Se concluiu a manutenção → atualiza equipamento para Ativo
+    if(statusAntigo !== 'Concluída' && novoStatus === 'Concluída') {
+      const eq = [...db.pc,...db.imp,...db.eq,...(db.mon||[])].find(e=>e.tomb===tomb);
+      if(eq) {
+        eq.status   = 'Ativo';
+        eq.ult_man  = m.data;
+        const abaMap2 = {
+          pc:'Computadores', imp:'Impressoras',
+          eq:'Equipamentos Diversos', mon:'Monitores'
+        };
+        const tipoEq = db.pc.includes(eq)?'pc':db.imp.includes(eq)?'imp':db.eq.includes(eq)?'eq':'mon';
+        if(SCRIPT_URL) {
+          try {
+            const p2 = new URLSearchParams({action:'update', aba:abaMap2[tipoEq], data:encodeURIComponent(JSON.stringify(eq))});
+            await fetch(SCRIPT_URL+'?'+p2);
+          } catch(e){}
+        }
+        toast('Equipamento atualizado para Ativo!','ok');
+      }
+    }
+
+    if(SCRIPT_URL) {
+      try {
+        // Manutenção não tem tombamento único, usa data+tomb como chave — envia update por índice via insert
+        const p3 = new URLSearchParams({action:'updateMan', aba:'Manutencao', idx: manEditIdx, data:encodeURIComponent(JSON.stringify(m))});
+        await fetch(SCRIPT_URL+'?'+p3);
+      } catch(e){}
+    }
+  } else {
+    db.man.push(m);
+    const src = [...db.pc,...db.imp,...db.eq,...(db.mon||[])].find(e=>e.tomb.toUpperCase()===tomb.toUpperCase());
+    if(src){ src.ult_man = m.data; }
+    if(SCRIPT_URL) {
+      try {
+        const p4 = new URLSearchParams({action:'insert', aba:'Manutencao', data:encodeURIComponent(JSON.stringify(m))});
+        await fetch(SCRIPT_URL+'?'+p4);
+      } catch(e){}
+    }
+  }
+
+  saveLocal(); manEditIdx = null;
+  hideLoading(); closeModal('modal-man'); renderTbl('man'); renderDash();
+  toast(isEdit ? 'Manutenção atualizada!' : 'Manutenção registrada!','ok');
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CONFIG — corrigir salvar URL + gerenciar setores
+// ═══════════════════════════════════════════════════════════════════════════
+const _origRenderCfg = renderCfg;
+renderCfg = function() {
+  _origRenderCfg();
+  // Corrige campo URL
+  const cfgUrl = document.getElementById('cfg-url');
+  if(cfgUrl) cfgUrl.value = SCRIPT_URL || '';
+};
+
+// Override salvarScriptUrl para pegar do campo cfg-url também
+const _origSalvarScriptUrl = salvarScriptUrl;
+salvarScriptUrl = function() {
+  const urlEl = document.getElementById('cfg-url') || document.getElementById('inp-script-url');
+  const url = urlEl ? urlEl.value.trim() : '';
+  if(!url){ toast('Cole a URL do Apps Script.','err'); return; }
+  SCRIPT_URL = url;
+  localStorage.setItem('inv_script_url', url);
+  document.getElementById('setup-banner') && (document.getElementById('setup-banner').style.display='none');
+  toast('URL salva com sucesso!','ok');
+};
+
+// Gerenciar setores
+function abrirModalSetor(setor='', meses=12) {
+  const nome   = prompt('Nome do setor:', setor);
+  if(!nome) return;
+  const mesesN = parseInt(prompt('Intervalo de manutenção (meses):', meses));
+  if(isNaN(mesesN)) return;
+  S.cfg.setores[nome] = mesesN;
+  saveLocal();
+  renderCfg();
+  toast('Setor salvo!','ok');
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// RELATÓRIOS
+// ═══════════════════════════════════════════════════════════════════════════
+function toggleRelCustom() {
+  const v = document.getElementById('rel-periodo').value;
+  ['rel-de-wrap','rel-ate-wrap'].forEach(id=>{
+    document.getElementById(id).style.display = v==='custom' ? '' : 'none';
+  });
+}
+
+function getRelPeriodo() {
+  const v = document.getElementById('rel-periodo').value;
+  const now = new Date(); let de, ate;
+  if(v==='mes_atual')   { de=new Date(now.getFullYear(),now.getMonth(),1); ate=new Date(now.getFullYear(),now.getMonth()+1,0); }
+  else if(v==='mes_passado') { de=new Date(now.getFullYear(),now.getMonth()-1,1); ate=new Date(now.getFullYear(),now.getMonth(),0); }
+  else if(v==='trimestre')   { de=new Date(now.getFullYear(),now.getMonth()-3,1); ate=now; }
+  else if(v==='semestre')    { de=new Date(now.getFullYear(),now.getMonth()-6,1); ate=now; }
+  else if(v==='ano_atual')   { de=new Date(now.getFullYear(),0,1); ate=new Date(now.getFullYear(),11,31); }
+  else { de=new Date(document.getElementById('rel-de').value); ate=new Date(document.getElementById('rel-ate').value); }
+  ate.setHours(23,59,59);
+  return {de,ate};
+}
+
+function getRelMans() {
+  const {de,ate} = getRelPeriodo();
+  const tipo = document.getElementById('rel-tipo').value;
+  return db.man.filter(m=>{
+    if(!m.data) return false;
+    const d = new Date(m.data); if(d<de||d>ate) return false;
+    if(tipo && m.tipo!==tipo) return false;
+    return true;
+  });
+}
+
+function barChart(id, dados) {
+  const max = Math.max(...dados.map(d=>Number(d.valor)||0), 1);
+  const cores = ['var(--azul)','var(--vermelho)','var(--amarelo)','var(--verde)','#0097A7','#7B1FA2'];
+  document.getElementById(id).innerHTML = dados.map((d,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:120px;font-size:12px;font-weight:600;color:var(--texto);text-align:right;flex-shrink:0">${d.label}</div>
+      <div style="flex:1;background:var(--cinza2);border-radius:4px;height:26px;overflow:hidden">
+        <div style="width:${Math.max(((Number(d.valor)||0)/max)*100,3)}%;background:${d.cor||cores[i%cores.length]};height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;transition:width .5s">
+          <span style="font-size:11px;font-weight:700;color:#fff;white-space:nowrap">${d.fmt||d.valor}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function gerarRel() {
+  const mans = getRelMans();
+  const {de,ate} = getRelPeriodo();
+  const titulo = `${de.toLocaleDateString('pt-BR')} — ${ate.toLocaleDateString('pt-BR')}`;
+  const custoTotal  = mans.reduce((s,m)=>s+Number(m.custo||0),0);
+  const concluidas  = mans.filter(m=>m.status==='Concluída').length;
+  const andamento   = mans.filter(m=>m.status==='Em andamento').length;
+  const custoMedio  = mans.length ? custoTotal/mans.length : 0;
+
+  // KPIs
+  const kpiEl = document.getElementById('rel-kpis');
+  kpiEl.style.display = '';
+  kpiEl.innerHTML = [
+    {l:'Manutenções no período', v:mans.length,    c:'',      raw:true},
+    {l:'Concluídas',             v:concluidas,      c:'green', raw:true},
+    {l:'Em andamento',           v:andamento,       c:'amber', raw:true},
+    {l:'Custo total',            v:'R$ '+custoTotal.toFixed(2).replace('.',','), c:'red'},
+    {l:'Custo médio',            v:'R$ '+custoMedio.toFixed(2).replace('.',','), c:''},
+    {l:'Total de equipamentos',  v:todos().length,  c:'cyan',  raw:true},
+    {l:'Computadores',           v:db.pc.length,    c:''},
+    {l:'Impressoras',            v:db.imp.length,   c:''},
+    {l:'Monitores',              v:(db.mon||[]).length, c:''},
+    {l:'Equip. Diversos',        v:db.eq.length,    c:'cyan'},
+  ].map(k=>`<div class="kc ${k.c}"><div class="kl">${k.l}</div><div class="kv" style="font-size:${k.raw?'30':'18'}px">${k.v}</div></div>`).join('');
+
+  // Gráficos
+  const gEl = document.getElementById('rel-graficos');
+  gEl.style.display = 'grid';
+  const tipos = {};
+  mans.forEach(m=>{ const t=m.tipo||'Sem tipo'; tipos[t]=(tipos[t]||0)+Number(m.custo||0); });
+  barChart('rel-chart-tipo', Object.entries(tipos).map(([k,v])=>({
+    label:k, valor:v, fmt:'R$ '+v.toFixed(2).replace('.',',')
+  })));
+  barChart('rel-chart-cat', [
+    {label:'Computadores', valor:db.pc.length},
+    {label:'Impressoras',  valor:db.imp.length},
+    {label:'Monitores',    valor:(db.mon||[]).length},
+    {label:'Eq. Diversos', valor:db.eq.length},
+  ]);
+
+  // Tabela
+  const tEl = document.getElementById('rel-tabela');
+  tEl.style.display = '';
+  document.getElementById('rel-tit').textContent = 'Manutenções — ' + titulo;
+  const enr = mans.map(m=>{ const eq=todos().find(e=>e.tomb===m.tomb)||{}; return {...m,_modelo:eq.modelo||eq.tipo_eq||'—',_setor:eq.setor||'—'}; });
+  document.getElementById('rel-tbody').innerHTML = enr.length
+    ? `<table><thead><tr><th>Data</th><th>Tombamento</th><th>Equipamento</th><th>Setor</th><th>Tipo</th><th>Técnico</th><th>Custo</th><th>Status</th></tr></thead>
+       <tbody>${enr.map(e=>`<tr>
+         <td>${fmt(e.data)}</td><td><strong>${e.tomb}</strong></td>
+         <td>${e._modelo}</td><td>${e._setor}</td><td>${e.tipo||'—'}</td>
+         <td>${e.tec||'—'}</td>
+         <td>${Number(e.custo)>0?'R$ '+Number(e.custo).toFixed(2).replace('.',','):'—'}</td>
+         <td>${pill(e.status)}</td>
+       </tr>`).join('')}</tbody></table>`
+    : '<div class="empty">Nenhuma manutenção no período.</div>';
+}
+
+function exportarRel() {
+  const mans = getRelMans();
+  if(!mans.length){ toast('Nenhum dado para exportar.','err'); return; }
+  const {de,ate} = getRelPeriodo();
+  const enr = mans.map(m=>{ const eq=todos().find(e=>e.tomb===m.tomb)||{}; return {...m,_modelo:eq.modelo||eq.tipo_eq||'—',_setor:eq.setor||'—'}; });
+  const custoTotal = enr.reduce((s,m)=>s+Number(m.custo||0),0);
+  const header = ['Data','Tombamento','Equipamento','Setor','Tipo','Técnico','Custo (R$)','Status'];
+  const rows = enr.map(e=>[fmt(e.data),e.tomb,e._modelo,e._setor,e.tipo||'',e.tec||'',Number(e.custo||0).toFixed(2),e.status]);
+  rows.push([]);
+  rows.push(['RESUMO','','','','','','','']);
+  rows.push(['Total de manutenções','','','','','',mans.length,'']);
+  rows.push(['Custo total (R$)','','','','','',custoTotal.toFixed(2),'']);
+  rows.push(['Período',de.toLocaleDateString('pt-BR')+' a '+ate.toLocaleDateString('pt-BR'),'','','','','','']);
+  const csv = [header,...rows].map(r=>r.map(c=>'"'+String(c||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a'); a.href=url;
+  a.download = 'relatorio-'+de.toISOString().split('T')[0]+'.csv';
+  a.click(); URL.revokeObjectURL(url);
+  toast('Relatório exportado!','ok');
+}
+
 function closeModal(id){document.getElementById(id).style.display='none';}
 function toast(msg,tipo='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${tipo} show`;setTimeout(()=>t.classList.remove('show'),3500);}
 </script>
