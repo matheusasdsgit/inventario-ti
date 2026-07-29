@@ -549,12 +549,15 @@ const db = { pc:[], imp:[], eq:[], man:[], mon:[] };
 async function apiGet(params) {
   if (!SCRIPT_URL) return null;
   const url = SCRIPT_URL + '?' + new URLSearchParams(params);
-  const r = await fetch(url);
+  const r = await fetch(url, {
+    method: 'GET',
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain' }
+  });
   return r.json();
 }
 async function apiPost(body) {
   if (!SCRIPT_URL) return null;
-  // Usa GET para evitar problemas de CORS com POST no Apps Script
   const { action, aba, data, tombamento, config } = body;
   const params = { action };
   if (aba)        params.aba  = aba;
@@ -562,7 +565,11 @@ async function apiPost(body) {
   if (data)       params.data = encodeURIComponent(JSON.stringify(data));
   if (config)     params.data = encodeURIComponent(JSON.stringify(config));
   const url = SCRIPT_URL + '?' + new URLSearchParams(params);
-  const r   = await fetch(url);
+  const r   = await fetch(url, {
+    method: 'GET',
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain' }
+  });
   return r.json();
 }
 
