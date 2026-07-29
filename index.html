@@ -537,8 +537,9 @@ const S = {
   }
 };
 const USERS = {
-  matheus:  { senha:'ftm@2026',  nome:'Matheus Anderson',   perfil:'admin' },
-  rodrigo:  { senha:'ftm@2026',  nome:'Rodrigo',            perfil:'admin' },
+  suporte:  { senha:'suporte@2025',  nome:'Suporte T.I.',       perfil:'admin' },
+  matheus:  { senha:'matheus@2025',  nome:'Matheus Anderson',   perfil:'admin' },
+  rodrigo:  { senha:'rodrigo@2025',  nome:'Rodrigo',            perfil:'admin' },
 };
 const db = { pc:[], imp:[], eq:[], man:[], mon:[] };
 
@@ -799,20 +800,20 @@ function renderTbl(tipo,f=''){
   const q=f.toLowerCase();const el=document.getElementById('tbl-'+tipo);
   if(tipo==='pc'){
     const rows=db.pc.filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
-    el.innerHTML=rows.length?`<table><thead><tr><th>Tombamento</th><th>Tipo</th><th>Modelo</th><th>Processador</th><th>RAM</th><th>Setor</th><th>Responsável</th><th>Status</th><th>Próx. Man.</th><th>Termo</th><th>WA</th><th></th></tr></thead><tbody>${rows.map(e=>{const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);const pmH=pm?`<span style="color:${d<0?'var(--vermelho)':d<=30?'var(--amarelo)':'inherit'}">${fmt(pm.toISOString())}</span>`:'—';const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:pm?fmt(pm.toISOString()):'em breve'});return`<tr><td><strong>${e.tomb}</strong></td><td>${e.tipo}</td><td>${e.marca} ${e.modelo}</td><td style="font-size:12px">${e.proc}</td><td>${e.ram}</td><td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td><td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td><td><button class="btn btn-ghost btn-sm" onclick="openMEQ('pc',${db.pc.indexOf(e)})">✏️</button></td></tr>`;}).join('')}</tbody></table>`:empty();
+    el.innerHTML=rows.length?`<table><thead><tr><th>Tombamento</th><th>Tipo</th><th>Modelo</th><th>Processador</th><th>RAM</th><th>Setor</th><th>Responsável</th><th>Status</th><th>Próx. Man.</th><th>Termo</th><th>WA</th><th></th></tr></thead><tbody>${rows.map(e=>{const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);const pmH=pm?`<span style="color:${d<0?'var(--vermelho)':d<=30?'var(--amarelo)':'inherit'}">${fmt(pm.toISOString())}</span>`:'—';const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:pm?fmt(pm.toISOString()):'em breve'});return`<tr><td><strong>${e.tomb}</strong></td><td>${e.tipo}</td><td>${e.marca} ${e.modelo}</td><td style="font-size:12px">${e.proc}</td><td>${e.ram}</td><td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td><td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td><td style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openMEQ('pc',${db.pc.indexOf(e)})">✏️</button><button class="btn btn-sm" style="background:#FFEBEE;color:var(--vermelho);border:none" onclick="excluirEquip('pc',${db.pc.indexOf(e)})">🗑️</button></td></tr>`;}).join('')}</tbody></table>`:empty();
   }
   if(tipo==='imp'){
     const rows=db.imp.filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
-    el.innerHTML=rows.length?`<table><thead><tr><th>Tombamento</th><th>Marca</th><th>Modelo</th><th>Tipo</th><th>Setor</th><th>Responsável</th><th>Status</th><th>Próx. Man.</th><th>Termo</th><th>WA</th><th></th></tr></thead><tbody>${rows.map(e=>{const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);const pmH=pm?`<span style="color:${d<0?'var(--vermelho)':d<=30?'var(--amarelo)':'inherit'}">${fmt(pm.toISOString())}</span>`:'—';const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:pm?fmt(pm.toISOString()):'em breve'});return`<tr><td><strong>${e.tomb}</strong></td><td>${e.marca}</td><td>${e.modelo}</td><td>${e.tipo}</td><td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td><td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td><td><button class="btn btn-ghost btn-sm" onclick="openMEQ('imp',${db.imp.indexOf(e)})">✏️</button></td></tr>`;}).join('')}</tbody></table>`:empty();
+    el.innerHTML=rows.length?`<table><thead><tr><th>Tombamento</th><th>Marca</th><th>Modelo</th><th>Tipo</th><th>Setor</th><th>Responsável</th><th>Status</th><th>Próx. Man.</th><th>Termo</th><th>WA</th><th></th></tr></thead><tbody>${rows.map(e=>{const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);const pmH=pm?`<span style="color:${d<0?'var(--vermelho)':d<=30?'var(--amarelo)':'inherit'}">${fmt(pm.toISOString())}</span>`:'—';const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:pm?fmt(pm.toISOString()):'em breve'});return`<tr><td><strong>${e.tomb}</strong></td><td>${e.marca}</td><td>${e.modelo}</td><td>${e.tipo}</td><td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td><td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td><td style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openMEQ('imp',${db.imp.indexOf(e)})">✏️</button><button class="btn btn-sm" style="background:#FFEBEE;color:var(--vermelho);border:none" onclick="excluirEquip('imp',${db.imp.indexOf(e)})">🗑️</button></td></tr>`;}).join('')}</tbody></table>`:empty();
   }
   if(tipo==='eq'){
     const rows=db.eq.filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
-    el.innerHTML=rows.length?`<table><thead><tr><th>Tombamento</th><th>Tipo</th><th>Marca</th><th>Modelo</th><th>Setor</th><th>Responsável</th><th>Status</th><th>Próx. Man.</th><th>Termo</th><th>WA</th><th></th></tr></thead><tbody>${rows.map(e=>{const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);const pmH=pm?`<span style="color:${d<0?'var(--vermelho)':d<=30?'var(--amarelo)':'inherit'}">${fmt(pm.toISOString())}</span>`:'—';const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:pm?fmt(pm.toISOString()):'em breve'});return`<tr><td><strong>${e.tomb}</strong></td><td>${e.tipo_eq}</td><td>${e.marca}</td><td>${e.modelo}</td><td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td><td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td><td><button class="btn btn-ghost btn-sm" onclick="openMEQ('eq',${db.eq.indexOf(e)})">✏️</button></td></tr>`;}).join('')}</tbody></table>`:empty();
+    el.innerHTML=rows.length?`<table><thead><tr><th>Tombamento</th><th>Tipo</th><th>Marca</th><th>Modelo</th><th>Setor</th><th>Responsável</th><th>Status</th><th>Próx. Man.</th><th>Termo</th><th>WA</th><th></th></tr></thead><tbody>${rows.map(e=>{const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);const pmH=pm?`<span style="color:${d<0?'var(--vermelho)':d<=30?'var(--amarelo)':'inherit'}">${fmt(pm.toISOString())}</span>`:'—';const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:pm?fmt(pm.toISOString()):'em breve'});return`<tr><td><strong>${e.tomb}</strong></td><td>${e.tipo_eq}</td><td>${e.marca}</td><td>${e.modelo}</td><td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td><td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td><td style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openMEQ('eq',${db.eq.indexOf(e)})">✏️</button><button class="btn btn-sm" style="background:#FFEBEE;color:var(--vermelho);border:none" onclick="excluirEquip('eq',${db.eq.indexOf(e)})">🗑️</button></td></tr>`;}).join('')}</tbody></table>`:empty();
   }
   if(tipo==='man'){
     const rows=db.man.filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
     const enr=rows.map(m=>{const eq=todos().find(e=>e.tomb===m.tomb)||{};return{...m,modelo:eq.modelo||eq.tipo_eq||'—',setor:eq.setor||'—',resp_:eq.resp||'—'};});
-    el.innerHTML=enr.length?`<table><thead><tr><th>Data</th><th>Tombamento</th><th>Equipamento</th><th>Setor</th><th>Responsável</th><th>Tipo</th><th>Técnico</th><th>Custo</th><th>Status</th><th></th></tr></thead><tbody>${enr.map(e=>`<tr><td>${fmt(e.data)}</td><td><strong>${e.tomb}</strong></td><td>${e.modelo}</td><td>${e.setor}</td><td>${e.resp_}</td><td>${e.tipo}</td><td>${e.tec||'—'}</td><td>${Number(e.custo)>0?'R$ '+Number(e.custo).toFixed(2).replace('.',','):'—'}</td><td>${pill(e.status)}</td><td><button class="btn btn-ghost btn-sm" onclick="editarMan(${db.man.indexOf(m)})">✏️</button></td></tr>`).join('')}</tbody></table>`:empty();
+    el.innerHTML=enr.length?`<table><thead><tr><th>Data</th><th>Tombamento</th><th>Equipamento</th><th>Setor</th><th>Responsável</th><th>Tipo</th><th>Técnico</th><th>Custo</th><th>Status</th><th></th></tr></thead><tbody>${enr.map(e=>`<tr><td>${fmt(e.data)}</td><td><strong>${e.tomb}</strong></td><td>${e.modelo}</td><td>${e.setor}</td><td>${e.resp_}</td><td>${e.tipo}</td><td>${e.tec||'—'}</td><td>${Number(e.custo)>0?'R$ '+Number(e.custo).toFixed(2).replace('.',','):'—'}</td><td>${pill(e.status)}</td><td style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="editarMan(${db.man.indexOf(m)})">✏️</button><button class="btn btn-sm" style="background:#FFEBEE;color:var(--vermelho);border:none" onclick="excluirMan(${db.man.indexOf(m)})">🗑️</button></td></tr>`).join('')}</tbody></table>`:empty();
   }
   if(tipo==='termos'){
     const ft=S.ftTermos;const all=todos().filter(e=>ft==='todos'||e.t_status?.toLowerCase()===ft);
@@ -997,7 +998,7 @@ renderTbl = function(tipo, f='') {
       <td>${e.polegadas||'—'}"</td><td>${e.tipo_tela||'—'}</td><td>${e.conexao||'—'}</td>
       <td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td>
       <td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td>
-      <td><button class="btn btn-ghost btn-sm" onclick="openMEQ('mon',${(db.mon||[]).indexOf(e)})">✏️</button></td>
+      <td style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openMEQ('mon',${(db.mon||[]).indexOf(e)})">✏️</button><button class="btn btn-sm" style="background:#FFEBEE;color:var(--vermelho);border:none" onclick="excluirEquip('mon',${(db.mon||[]).indexOf(e)})">🗑️</button></td>
     </tr>`;
   }).join('')}</tbody></table>` : empty();
 };
@@ -1316,6 +1317,43 @@ function exportarRel() {
   a.download = 'relatorio-'+de.toISOString().split('T')[0]+'.csv';
   a.click(); URL.revokeObjectURL(url);
   toast('Relatório exportado!','ok');
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EXCLUIR
+// ═══════════════════════════════════════════════════════════════════════════
+async function excluirEquip(tipo, idx) {
+  const abaMap = {pc:'Computadores', imp:'Impressoras', eq:'Equipamentos Diversos', mon:'Monitores'};
+  const obj    = db[tipo][idx];
+  if(!obj) return;
+  if(!confirm('Excluir equipamento ' + obj.tomb + '? Esta ação não pode ser desfeita.')) return;
+  showLoading('Excluindo…');
+  db[tipo].splice(idx, 1);
+  if(SCRIPT_URL) {
+    try {
+      const params = new URLSearchParams({action:'delete', aba:abaMap[tipo], tomb:obj.tomb});
+      await fetch(SCRIPT_URL + '?' + params);
+    } catch(e) { toast('Erro ao excluir no Sheets.','err'); }
+  }
+  saveLocal(); hideLoading(); renderTbl(tipo); renderDash();
+  toast('Equipamento excluído!','ok');
+}
+
+async function excluirMan(idx) {
+  const m = db.man[idx];
+  if(!m) return;
+  if(!confirm('Excluir registro de manutenção do equipamento ' + m.tomb + '?')) return;
+  showLoading('Excluindo…');
+  db.man.splice(idx, 1);
+  if(SCRIPT_URL) {
+    try {
+      const params = new URLSearchParams({action:'deleteMan', aba:'Manutencao', idx});
+      await fetch(SCRIPT_URL + '?' + params);
+    } catch(e) { toast('Erro ao excluir no Sheets.','err'); }
+  }
+  saveLocal(); hideLoading(); renderTbl('man'); renderDash();
+  toast('Manutenção excluída!','ok');
 }
 
 function closeModal(id){document.getElementById(id).style.display='none';}
