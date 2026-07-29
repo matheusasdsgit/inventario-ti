@@ -1367,6 +1367,23 @@ async function excluirMan(idx) {
 
 function closeModal(id){document.getElementById(id).style.display='none';}
 function toast(msg,tipo='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${tipo} show`;setTimeout(()=>t.classList.remove('show'),3500);}
+
+function goPageM(pg, el) {
+  goPage(pg, null);
+  document.querySelectorAll('.mn-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+// Sync mobile badges with main badges
+const _origRenderDash = renderDash;
+renderDash = function() {
+  _origRenderDash();
+  const man = document.getElementById('badge-man')?.textContent;
+  const ter = document.getElementById('badge-termos')?.textContent;
+  const mb1 = document.getElementById('mn-badge-man');
+  const mb2 = document.getElementById('mn-badge-termos');
+  if (mb1) mb1.style.display = man && man !== '0' ? '' : 'none';
+  if (mb2) mb2.style.display = ter && ter !== '0' ? '' : 'none';
+};
 </script>
 
 <!-- MOBILE BOTTOM NAV -->
@@ -1395,24 +1412,7 @@ function toast(msg,tipo='ok'){const t=document.getElementById('toast');t.textCon
   </button>
 </div>
 
-<script>
-function goPageM(pg, el) {
-  goPage(pg, null);
-  document.querySelectorAll('.mn-item').forEach(i => i.classList.remove('active'));
-  if (el) el.classList.add('active');
-}
-// Sync mobile badges with main badges
-const _origRenderDash = renderDash;
-renderDash = function() {
-  _origRenderDash();
-  const man = document.getElementById('badge-man')?.textContent;
-  const ter = document.getElementById('badge-termos')?.textContent;
-  const mb1 = document.getElementById('mn-badge-man');
-  const mb2 = document.getElementById('mn-badge-termos');
-  if (mb1) mb1.style.display = man && man !== '0' ? '' : 'none';
-  if (mb2) mb2.style.display = ter && ter !== '0' ? '' : 'none';
-};
-</script>
+
 
 </body>
 </html>
