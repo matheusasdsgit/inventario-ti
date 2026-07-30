@@ -601,7 +601,7 @@ async function carregarDoSheets() {
   if (!SCRIPT_URL) { loadLocal(); return; }
   showLoading('Conectando ao Google Sheets…');
   try {
-    const [pc, imp, eq, man, cfg] = await Promise.all([
+    const [pc, imp, eq, man, mon, cfg] = await Promise.all([
       apiGet({action:'read', aba:'Computadores'}),
       apiGet({action:'read', aba:'Impressoras'}),
       apiGet({action:'read', aba:'Equipamentos Diversos'}),
