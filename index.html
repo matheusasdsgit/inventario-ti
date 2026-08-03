@@ -667,11 +667,12 @@ async function doLogin() {
   const p = document.getElementById('inp-pass').value;
   if (USERS[u] && USERS[u].senha === p) {
     S.user = { login:u, nome:USERS[u].nome };
+    localStorage.setItem('inv_session', JSON.stringify({ login:u, nome:USERS[u].nome }));
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('nav-un').textContent = USERS[u].nome;
     document.getElementById('ph-user').textContent = USERS[u].nome;
-    document.getElementById('nav-av').textContent = 'TI';
-    if (!SCRIPT_URL) document.getElementById('setup-banner').style.display = 'flex';
+    document.getElementById('nav-av').textContent = USERS[u].nome.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+    if (!SCRIPT_URL) document.getElementById('setup-banner') && (document.getElementById('setup-banner').style.display = 'flex');
     await carregarDoSheets();
     await carregarPolos();
     renderDash();
@@ -681,6 +682,7 @@ async function doLogin() {
 }
 function doLogout() {
   S.user = null;
+  localStorage.removeItem('inv_session');
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('inp-pass').value = '';
   document.getElementById('login-erro').style.display = 'none';
@@ -860,7 +862,7 @@ function openMEQ(tipo,idx=null){
   S.meqTipo=tipo;S.meqIdx=idx;
   const campos=CAMPOS[tipo];const obj=idx!==null?db[tipo][idx]:{};
   document.getElementById('meq-title').textContent=idx!==null?'Editar Equipamento':'Novo Equipamento';
-  document.getElementById('meq-form').innerHTML=campos.map(c=>{const v=obj[c.id]||'';let inp='';if(c.sel)inp=`<select id="mf-${c.id}">${c.sel.map(o=>`<option${o===v?' selected':''}>${o}</option>`).join('')}</select>`;else if(c.type==='ta')inp=`<textarea id="mf-${c.id}">${v}</textarea>`;else inp=`<input type="${c.type||'text'}" id="mf-${c.id}" value="${v}">`;return`<div class="fg${c.full?' full':''}"><label>${c.l}</label>${inp}</div>`;}).join('');
+  document.getElementById('meq-form').innerHTML=campos.map(c=>{const v=obj[c.id]||'';let inp='';if(c.sel)inp=`<select id="mf-${c.id}">${c.sel.map(o=>`<option${o===v?' selected':''}>${o}</option>`).join('')}</select>`;else if(c.type==='ta')inp=`<textarea id="mf-${c.id}">${v}</textarea>`;else if(c.type==='foto')inp=campoFoto('mf-'+c.id,v);else if(c.polo)inp=campoLocalizacao('mf-'+c.id,v);else inp=`<input type="${c.type||'text'}" id="mf-${c.id}" value="${v}">`;return`<div class="fg${c.full?' full':''}"><label>${c.l}</label>${inp}</div>`;}).join('');
   document.getElementById('modal-equip').style.display='flex';
   // Adiciona listener para campo "Outro" em selects que tenham essa opção
   document.querySelectorAll('#meq-form select').forEach(sel => {
@@ -1488,6 +1490,31 @@ async function excluirMan(idx) {
   saveLocal(); hideLoading(); renderTbl('man'); renderDash();
   toast('Manutenção excluída!','ok');
 }
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// RESTAURAR SESSÃO AO RECARREGAR
+// ═══════════════════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', async () => {
+  const sessao = localStorage.getItem('inv_session');
+  if (sessao) {
+    try {
+      const u = JSON.parse(sessao);
+      if (u && u.login && USERS[u.login]) {
+        S.user = u;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('nav-un').textContent = u.nome;
+        document.getElementById('ph-user').textContent = u.nome;
+        document.getElementById('nav-av').textContent = u.nome.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+        await carregarDoSheets();
+        await carregarPolos();
+        renderDash();
+      }
+    } catch(e) {
+      localStorage.removeItem('inv_session');
+    }
+  }
+});
 
 function closeModal(id){document.getElementById(id).style.display='none';}
 function toast(msg,tipo='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${tipo} show`;setTimeout(()=>t.classList.remove('show'),3500);}
