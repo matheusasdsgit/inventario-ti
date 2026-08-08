@@ -921,7 +921,7 @@ function renderTbl(tipo,f=''){
       <button class="btn btn-ghost btn-sm" onclick="moverParaEstoque('pc',${db.pc.indexOf(e)})" title="Mover para estoque">📦</button>
       <button class="btn btn-sm" style="background:#FFF3E0;color:var(--amarelo);border:none" onclick="abrirModalBaixa('pc',${db.pc.indexOf(e)})" title="Baixar">⬇️</button>
       <button class="btn btn-sm" style="background:#FFEBEE;color:var(--vermelho);border:none" onclick="excluirEquip('pc',${db.pc.indexOf(e)})" title="Excluir">🗑️</button>
-    </td></tr>\`;}).join('')}</tbody></table>`:empty();
+    </td></tr>`;}).join('')}</tbody></table>`:empty();
   }
   if(tipo==='imp'){
     const rows=db.imp.filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
