@@ -667,7 +667,7 @@ async function doLogin() {
   const p = document.getElementById('inp-pass').value;
   if (USERS[u] && USERS[u].senha === p) {
     S.user = { login:u, nome:USERS[u].nome };
-    localStorage.setItem('inv_session', JSON.stringify({ login:u, nome:USERS[u].nome }));
+    sessionStorage.setItem('inv_session', JSON.stringify({ login:u, nome:USERS[u].nome }));
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('nav-un').textContent = USERS[u].nome;
     document.getElementById('ph-user').textContent = USERS[u].nome;
@@ -682,7 +682,7 @@ async function doLogin() {
 }
 function doLogout() {
   S.user = null;
-  localStorage.removeItem('inv_session');
+  sessionStorage.removeItem('inv_session');
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('inp-pass').value = '';
   document.getElementById('login-erro').style.display = 'none';
@@ -1496,7 +1496,7 @@ async function excluirMan(idx) {
 // RESTAURAR SESSÃO AO RECARREGAR
 // ═══════════════════════════════════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', async () => {
-  const sessao = localStorage.getItem('inv_session');
+  const sessao = sessionStorage.getItem('inv_session');
   if (sessao) {
     try {
       const u = JSON.parse(sessao);
@@ -1511,7 +1511,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         renderDash();
       }
     } catch(e) {
-      localStorage.removeItem('inv_session');
+      sessionStorage.removeItem('inv_session');
     }
   }
 });
