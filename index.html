@@ -616,6 +616,63 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle;}
   </div>
 </div>
 
+
+<!-- MODAL SELETOR DE CATEGORIA -->
+<div class="mo" id="modal-categoria" style="display:none" onclick="if(event.target===this)closeModal('modal-categoria')">
+  <div class="md" style="max-width:400px">
+    <div class="mh"><h3>Selecione a categoria</h3><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-categoria')">✕</button></div>
+    <div class="mb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <button onclick="closeModal('modal-categoria');openMEQ('pc')" style="padding:20px;border:1px solid var(--cinza2);border-radius:var(--radius);background:#fff;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:8px" onmouseover="this.style.borderColor='var(--azul)';this.style.background='var(--azul-lt)'" onmouseout="this.style.borderColor='var(--cinza2)';this.style.background='#fff'">
+          <svg width="28" height="28" fill="none" stroke="var(--azul)" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Computador
+        </button>
+        <button onclick="closeModal('modal-categoria');openMEQ('imp')" style="padding:20px;border:1px solid var(--cinza2);border-radius:var(--radius);background:#fff;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:8px" onmouseover="this.style.borderColor='var(--verde)';this.style.background='#E8F5E9'" onmouseout="this.style.borderColor='var(--cinza2)';this.style.background='#fff'">
+          <svg width="28" height="28" fill="none" stroke="var(--verde)" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><rect x="6" y="17" width="12" height="5" rx="1"/><path d="M6 13H4a2 2 0 00-2 2v3h4v-3"/><path d="M18 13h2a2 2 0 012 2v3h-4v-3"/></svg>
+          Impressora
+        </button>
+        <button onclick="closeModal('modal-categoria');openMEQ('mon')" style="padding:20px;border:1px solid var(--cinza2);border-radius:var(--radius);background:#fff;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:8px" onmouseover="this.style.borderColor='#0097A7';this.style.background='#E0F7FA'" onmouseout="this.style.borderColor='var(--cinza2)';this.style.background='#fff'">
+          <svg width="28" height="28" fill="none" stroke="#0097A7" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          Monitor
+        </button>
+        <button onclick="closeModal('modal-categoria');openMEQ('eq')" style="padding:20px;border:1px solid var(--cinza2);border-radius:var(--radius);background:#fff;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:8px" onmouseover="this.style.borderColor='var(--amarelo)';this.style.background='#FFF8E1'" onmouseout="this.style.borderColor='var(--cinza2)';this.style.background='#fff'">
+          <svg width="28" height="28" fill="none" stroke="var(--amarelo)" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Equip. Diversos
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL SELETOR DE CATEGORIA -->
+<div class="mo" id="modal-cat" style="display:none" onclick="if(event.target===this)closeModal('modal-cat')">
+  <div class="md" style="max-width:400px">
+    <div class="mh"><h3>Novo Equipamento</h3><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-cat')">✕</button></div>
+    <div class="mb">
+      <p style="font-size:13px;color:var(--cinza3);margin-bottom:16px">Selecione a categoria do equipamento:</p>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn btn-ghost" style="justify-content:flex-start;gap:12px;padding:14px 16px" onclick="closeModal('modal-cat');openMEQ('pc')">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Computador
+        </button>
+        <button class="btn btn-ghost" style="justify-content:flex-start;gap:12px;padding:14px 16px" onclick="closeModal('modal-cat');openMEQ('imp')">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><rect x="6" y="17" width="12" height="5" rx="1"/><path d="M6 13H4a2 2 0 00-2 2v3h4v-3"/><path d="M18 13h2a2 2 0 012 2v3h-4v-3"/></svg>
+          Impressora
+        </button>
+        <button class="btn btn-ghost" style="justify-content:flex-start;gap:12px;padding:14px 16px" onclick="closeModal('modal-cat');openMEQ('mon')">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          Monitor
+        </button>
+        <button class="btn btn-ghost" style="justify-content:flex-start;gap:12px;padding:14px 16px" onclick="closeModal('modal-cat');openMEQ('eq')">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Equipamento Diverso
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -844,7 +901,10 @@ function goPage(pg, el) {
   if(pg==='manutencao')   act.innerHTML='<button class="btn btn-primary" onclick="openMMAN()">+ Registrar manutenção</button>';
   if(pg==='computadores') renderTbl('pc');
   if(pg==='monitores') renderTbl('mon');
-  if(pg==='estoque')   renderTbl('estoque');
+  if(pg==='estoque') {
+    renderTbl('estoque');
+    document.getElementById('ph-actions').innerHTML = '<button class="btn btn-primary" onclick="abrirSeletorCategoria()">+ Novo equipamento</button>';
+  }
   if(pg==='baixados')  renderTbl('baixados');
   if(pg==='impressoras')  renderTbl('imp');
   if(pg==='diversos')     renderTbl('eq');
@@ -948,7 +1008,7 @@ function setFT(ft,el){S.ftTermos=ft;document.querySelectorAll('#page-termos .tab
 // MODAL EQUIP
 // ═══════════════════════════════════════════════════════════════════════════
 const CAMPOS={
-  pc:[{id:'tomb',l:'Tombamento'},{id:'tipo',l:'Tipo',sel:['Desktop','Notebook','All-in-One','Monitor','Outro']},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'proc',l:'Processador'},{id:'ram',l:'RAM'},{id:'arm',l:'Armazenamento'},{id:'so',l:'Sistema Operacional'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização',polo:true},{id:'status',l:'Status',sel:['Ativo','Em estoque','Em manutenção','Baixado']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento',full:true},{id:'foto_url',l:'Foto do Equipamento',type:'foto',full:true},{id:'motivo_baixa',l:'Motivo da Baixa',full:true},{id:'data_baixa',l:'Data da Baixa',type:'date'},{id:'obs',l:'Observações',type:'ta',full:true}],
+  pc:[{id:'tomb',l:'Tombamento'},{id:'tipo',l:'Tipo',sel:['Desktop','Notebook','All-in-One','Outro']},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'proc',l:'Processador'},{id:'ram',l:'RAM'},{id:'arm',l:'Armazenamento'},{id:'so',l:'Sistema Operacional'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização',polo:true},{id:'status',l:'Status',sel:['Ativo','Em estoque','Em manutenção','Baixado']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento',full:true},{id:'foto_url',l:'Foto do Equipamento',type:'foto',full:true},{id:'motivo_baixa',l:'Motivo da Baixa',full:true},{id:'data_baixa',l:'Data da Baixa',type:'date'},{id:'obs',l:'Observações',type:'ta',full:true}],
   imp:[{id:'tomb',l:'Tombamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'tipo',l:'Tipo',sel:['Laser','Jato de tinta','Multifuncional','Térmica']},{id:'conexao',l:'Conexão',sel:['USB','Rede','WiFi','USB/WiFi','Rede/WiFi']},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização',polo:true},{id:'status',l:'Status',sel:['Ativo','Em estoque','Em manutenção','Baixado']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento',full:true},{id:'foto_url',l:'Foto do Equipamento',type:'foto',full:true},{id:'motivo_baixa',l:'Motivo da Baixa',full:true},{id:'data_baixa',l:'Data da Baixa',type:'date'},{id:'obs',l:'Observações',type:'ta',full:true}],
   mon:[
     {id:'tomb',l:'Tombamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},
@@ -1729,6 +1789,8 @@ function gerarRel() {
     {l:'Impressoras',            v:db.imp.length,   c:''},
     {l:'Monitores',              v:(db.mon||[]).length, c:''},
     {l:'Equip. Diversos',        v:db.eq.length,    c:'cyan'},
+    {l:'Em estoque',             v:todosEquip().filter(e=>e.status==='Em estoque').length, c:'amber'},
+    {l:'Baixados',               v:todosEquip().filter(e=>e.status==='Baixado').length,    c:'red'},
   ].map(k=>`<div class="kc ${k.c}"><div class="kl">${k.l}</div><div class="kv" style="font-size:${k.raw?'30':'18'}px">${k.v}</div></div>`).join('');
 
   // Gráficos
@@ -1846,6 +1908,15 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
   }
 });
+
+function abrirSeletorCategoria() {
+  document.getElementById('modal-categoria').style.display = 'flex';
+}
+
+
+function abrirSeletorCategoria() {
+  document.getElementById('modal-cat').style.display = 'flex';
+}
 
 function closeModal(id){document.getElementById(id).style.display='none';}
 function toast(msg,tipo='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${tipo} show`;setTimeout(()=>t.classList.remove('show'),3500);}
