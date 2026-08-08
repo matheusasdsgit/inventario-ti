@@ -255,6 +255,15 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle;}
   #mobile-nav { display: none; }
 }
 
+
+/* ── PRONTUÁRIO ──────────────────────────────────────────────────────────── */
+.pront-item{display:flex;gap:14px;padding:16px 24px;border-bottom:1px solid var(--cinza2);}
+.pront-item:last-child{border-bottom:none;}
+.pront-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.pront-body{flex:1;}
+.pront-label{font-size:13px;font-weight:700;margin-bottom:4px;}
+.pront-info{font-size:12px;color:var(--cinza3);margin-bottom:2px;}
+
 </style>
 </head>
 <body>
@@ -285,7 +294,7 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle;}
       <div class="login-erro" id="login-erro">Usuário ou senha incorretos.</div>
     </div>
   </div>
-  <div class="login-copy">2026 © Gestão de Patrimônio — Grupo Três Marias.</div>
+  <div class="login-copy">2026 © Gestão de Patrimônio — Grupo Três Marias | EESAP | Algoritmo</div>
 </div>
 
 <!-- TOPNAV -->
@@ -294,10 +303,7 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle;}
     <div class="nav-logo-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
     <div class="nav-logo-text"><span>Grupo Três Marias</span><span>Gestão de Patrimônio</span></div>
   </div>
-  <div class="nav-div"></div>
-  <span class="nav-badge">TRÊS MARIAS</span>
-  <span class="nav-badge">EESAP</span>
-  <span class="nav-badge">ALGORITMO</span>
+
   <div class="nav-right">
     <div class="nav-user"><div class="nav-avatar" id="nav-av">TI</div><span id="nav-un">Suporte TI</span></div>
     <button class="btn-out" onclick="doLogout()">Sair</button>
@@ -314,6 +320,9 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle;}
     <button class="ni" onclick="goPage('impressoras',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><rect x="6" y="17" width="12" height="5" rx="1"/><path d="M6 13H4a2 2 0 00-2 2v3h4v-3"/><path d="M18 13h2a2 2 0 012 2v3h-4v-3"/></svg>Impressoras</button>
     <button class="ni" onclick="goPage('diversos',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Equip. Diversos</button>
     <button class="ni" onclick="goPage('monitores',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Monitores</button>
+    <div class="ns">Patrimônio</div>
+    <button class="ni" onclick="goPage('estoque',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>Estoque</button>
+    <button class="ni" onclick="goPage('baixados',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>Baixados</button>
     <div class="ns">Gestão</div>
     <button class="ni" onclick="goPage('manutencao',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>Manutenções<span class="nc" id="badge-man">0</span></button>
     <button class="ni" onclick="goPage('termos',this)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Termos<span class="nc" id="badge-termos">0</span></button>
@@ -349,6 +358,35 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle;}
       </div>
     </div>
 
+
+
+    <!-- ESTOQUE -->
+    <div class="page" id="page-estoque">
+      <div class="tc">
+        <div class="ttb">
+          <h3>Estoque</h3>
+          <div class="sb mla">
+            <svg width="14" height="14" fill="none" stroke="#90A4AE" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" placeholder="Buscar tombamento, tipo…" oninput="filtrar('estoque',this.value)">
+          </div>
+        </div>
+        <div id="tbl-estoque"></div>
+      </div>
+    </div>
+
+    <!-- BAIXADOS -->
+    <div class="page" id="page-baixados">
+      <div class="tc">
+        <div class="ttb">
+          <h3>Baixados</h3>
+          <div class="sb mla">
+            <svg width="14" height="14" fill="none" stroke="#90A4AE" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" placeholder="Buscar tombamento…" oninput="filtrar('baixados',this.value)">
+          </div>
+        </div>
+        <div id="tbl-baixados"></div>
+      </div>
+    </div>
 
     <!-- RELATÓRIOS -->
     <div class="page" id="page-relatorios">
@@ -513,6 +551,68 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle;}
       </div>
     </div>
     <div class="mf"><button class="btn btn-ghost" onclick="closeModal('modal-man')">Cancelar</button><button class="btn btn-primary" onclick="salvarMan()">Registrar</button></div>
+  </div>
+</div>
+
+
+<!-- MODAL BAIXA -->
+<div class="mo" id="modal-baixa" style="display:none" onclick="if(event.target===this)closeModal('modal-baixa')">
+  <div class="md" style="max-width:480px">
+    <div class="mh"><h3>⬇️ Registrar Baixa</h3><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-baixa')">✕</button></div>
+    <div class="mb">
+      <div class="fg-grid">
+        <div class="fg full">
+          <label>Motivo da Baixa</label>
+          <select id="baixa-motivo-sel" onchange="document.getElementById('baixa-motivo').value=this.value==='outro'?'':this.value">
+            <option value="">Selecione…</option>
+            <option>Defeito irreparável</option>
+            <option>Obsolescência</option>
+            <option>Perda/Furto</option>
+            <option>Doação</option>
+            <option value="outro">Outro</option>
+          </select>
+        </div>
+        <div class="fg full">
+          <label>Descreva o motivo</label>
+          <textarea id="baixa-motivo" rows="3" placeholder="Detalhe o motivo da baixa…"></textarea>
+        </div>
+        <div class="fg">
+          <label>Data da Baixa</label>
+          <input type="date" id="baixa-data">
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-baixa')">Cancelar</button>
+      <button class="btn btn-danger" onclick="confirmarBaixa()">Confirmar Baixa</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ATIVAR DO ESTOQUE -->
+<div class="mo" id="modal-ativar" style="display:none" onclick="if(event.target===this)closeModal('modal-ativar')">
+  <div class="md" style="max-width:480px">
+    <div class="mh"><h3>✅ Ativar Equipamento</h3><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-ativar')">✕</button></div>
+    <div class="mb">
+      <p style="font-size:13px;color:var(--cinza3);margin-bottom:16px">Equipamento: <strong id="ativar-tomb"></strong></p>
+      <div class="fg-grid">
+        <div class="fg"><label>Setor</label><input type="text" id="ativar-setor" placeholder="Ex: TI, RH…"></div>
+        <div class="fg"><label>Responsável</label><input type="text" id="ativar-resp" placeholder="Nome do responsável"></div>
+        <div class="fg full"><label>Localização</label><div id="ativar-local"></div></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-ativar')">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmarAtivar()">Ativar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PRONTUÁRIO -->
+<div class="mo" id="modal-pront" style="display:none" onclick="if(event.target===this)closeModal('modal-pront')">
+  <div class="md" style="max-width:560px">
+    <div class="mh"><h3 id="pront-title">Prontuário</h3><button class="btn btn-ghost btn-sm" onclick="closeModal('modal-pront')">✕</button></div>
+    <div class="mb" id="pront-body" style="padding:0"></div>
   </div>
 </div>
 
@@ -733,7 +833,7 @@ function goPage(pg, el) {
   document.getElementById('page-'+pg).classList.add('active');
   if(el) el.classList.add('active');
   S.page = pg;
-  const T={dashboard:'Dashboard',relatorios:'Relatórios',computadores:'Computadores',impressoras:'Impressoras',diversos:'Equip. Diversos',monitores:'Monitores',manutencao:'Manutenções',termos:'Termos',config:'Configurações'};
+  const T={dashboard:'Dashboard',relatorios:'Relatórios',estoque:'Estoque',baixados:'Baixados',computadores:'Computadores',impressoras:'Impressoras',diversos:'Equip. Diversos',monitores:'Monitores',manutencao:'Manutenções',termos:'Termos',config:'Configurações'};
   document.getElementById('ph-title').innerHTML=`${T[pg]} <span class="pb">ADMINISTRADOR</span>`;
   document.getElementById('ph-bread').textContent=T[pg];
   const act=document.getElementById('ph-actions'); act.innerHTML='';
@@ -744,6 +844,8 @@ function goPage(pg, el) {
   if(pg==='manutencao')   act.innerHTML='<button class="btn btn-primary" onclick="openMMAN()">+ Registrar manutenção</button>';
   if(pg==='computadores') renderTbl('pc');
   if(pg==='monitores') renderTbl('mon');
+  if(pg==='estoque')   renderTbl('estoque');
+  if(pg==='baixados')  renderTbl('baixados');
   if(pg==='impressoras')  renderTbl('imp');
   if(pg==='diversos')     renderTbl('eq');
   if(pg==='manutencao')   renderTbl('man');
@@ -813,7 +915,13 @@ function renderTbl(tipo,f=''){
   const q=f.toLowerCase();const el=document.getElementById('tbl-'+tipo);
   if(tipo==='pc'){
     const rows=db.pc.filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
-    el.innerHTML=rows.length?`<table><thead><tr><th>Foto</th><th>Tombamento</th><th>Tipo</th><th>Modelo</th><th>Processador</th><th>RAM</th><th>Setor</th><th>Responsável</th><th>Status</th><th>Próx. Man.</th><th>Termo</th><th>WA</th><th></th></tr></thead><tbody>${rows.map(e=>{const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);const pmH=pm?`<span style="color:${d<0?'var(--vermelho)':d<=30?'var(--amarelo)':'inherit'}">${fmt(pm.toISOString())}</span>`:'—';const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:pm?fmt(pm.toISOString()):'em breve'});return`<tr><td>${e.foto_url?`<img src="${e.foto_url}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;cursor:pointer" onclick="window.open('${e.foto_url}','_blank')">`:''}</td><td><strong>${e.tomb}</strong></td><td>${e.tipo}</td><td>${e.marca} ${e.modelo}</td><td style="font-size:12px">${e.proc}</td><td>${e.ram}</td><td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td><td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td><td style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openMEQ('pc',${db.pc.indexOf(e)})">✏️</button><button class="btn btn-sm" style="background:#FFEBEE;color:var(--vermelho);border:none" onclick="excluirEquip('pc',${db.pc.indexOf(e)})">🗑️</button></td></tr>`;}).join('')}</tbody></table>`:empty();
+    el.innerHTML=rows.length?`<table><thead><tr><th>Foto</th><th>Tombamento</th><th>Tipo</th><th>Modelo</th><th>Processador</th><th>RAM</th><th>Setor</th><th>Responsável</th><th>Status</th><th>Próx. Man.</th><th>Termo</th><th>WA</th><th></th></tr></thead><tbody>${rows.map(e=>{const pm=proxMan(e.ult_man,e.setor);const d=diasR(pm);const pmH=pm?`<span style="color:${d<0?'var(--vermelho)':d<=30?'var(--amarelo)':'inherit'}">${fmt(pm.toISOString())}</span>`:'—';const msg=buildMsg(S.cfg.msgMan,{resp:e.resp,tomb:e.tomb,data:pm?fmt(pm.toISOString()):'em breve'});return`<tr><td>${e.foto_url?`<img src="${e.foto_url}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;cursor:pointer" onclick="window.open('${e.foto_url}','_blank')">`:''}</td><td><strong>${e.tomb}</strong></td><td>${e.tipo}</td><td>${e.marca} ${e.modelo}</td><td style="font-size:12px">${e.proc}</td><td>${e.ram}</td><td>${e.setor}</td><td>${e.resp}</td><td>${pill(e.status)}</td><td>${pmH}</td><td>${pill(e.t_status)}</td><td>${wa(e.whats,msg)}</td><td style="display:flex;gap:4px;flex-wrap:wrap">
+      <button class="btn btn-ghost btn-sm" onclick="openMEQ('pc',${db.pc.indexOf(e)})" title="Editar">✏️</button>
+      <button class="btn btn-ghost btn-sm" onclick="abrirProntuario('pc',${db.pc.indexOf(e)})" title="Prontuário">📋</button>
+      <button class="btn btn-ghost btn-sm" onclick="moverParaEstoque('pc',${db.pc.indexOf(e)})" title="Mover para estoque">📦</button>
+      <button class="btn btn-sm" style="background:#FFF3E0;color:var(--amarelo);border:none" onclick="abrirModalBaixa('pc',${db.pc.indexOf(e)})" title="Baixar">⬇️</button>
+      <button class="btn btn-sm" style="background:#FFEBEE;color:var(--vermelho);border:none" onclick="excluirEquip('pc',${db.pc.indexOf(e)})" title="Excluir">🗑️</button>
+    </td></tr>\`;}).join('')}</tbody></table>`:empty();
   }
   if(tipo==='imp'){
     const rows=db.imp.filter(e=>!q||JSON.stringify(e).toLowerCase().includes(q));
@@ -840,15 +948,15 @@ function setFT(ft,el){S.ftTermos=ft;document.querySelectorAll('#page-termos .tab
 // MODAL EQUIP
 // ═══════════════════════════════════════════════════════════════════════════
 const CAMPOS={
-  pc:[{id:'tomb',l:'Tombamento'},{id:'tipo',l:'Tipo',sel:['Desktop','Notebook','All-in-One','Monitor','Outro']},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'proc',l:'Processador'},{id:'ram',l:'RAM'},{id:'arm',l:'Armazenamento'},{id:'so',l:'Sistema Operacional'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização',polo:true},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento',full:true},{id:'foto_url',l:'Foto do Equipamento',type:'foto',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
-  imp:[{id:'tomb',l:'Tombamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'tipo',l:'Tipo',sel:['Laser','Jato de tinta','Multifuncional','Térmica']},{id:'conexao',l:'Conexão',sel:['USB','Rede','WiFi','USB/WiFi','Rede/WiFi']},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização',polo:true},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento',full:true},{id:'foto_url',l:'Foto do Equipamento',type:'foto',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
+  pc:[{id:'tomb',l:'Tombamento'},{id:'tipo',l:'Tipo',sel:['Desktop','Notebook','All-in-One','Monitor','Outro']},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'proc',l:'Processador'},{id:'ram',l:'RAM'},{id:'arm',l:'Armazenamento'},{id:'so',l:'Sistema Operacional'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização',polo:true},{id:'status',l:'Status',sel:['Ativo','Em estoque','Em manutenção','Baixado']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento',full:true},{id:'foto_url',l:'Foto do Equipamento',type:'foto',full:true},{id:'motivo_baixa',l:'Motivo da Baixa',full:true},{id:'data_baixa',l:'Data da Baixa',type:'date'},{id:'obs',l:'Observações',type:'ta',full:true}],
+  imp:[{id:'tomb',l:'Tombamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'tipo',l:'Tipo',sel:['Laser','Jato de tinta','Multifuncional','Térmica']},{id:'conexao',l:'Conexão',sel:['USB','Rede','WiFi','USB/WiFi','Rede/WiFi']},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização',polo:true},{id:'status',l:'Status',sel:['Ativo','Em estoque','Em manutenção','Baixado']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento',full:true},{id:'foto_url',l:'Foto do Equipamento',type:'foto',full:true},{id:'motivo_baixa',l:'Motivo da Baixa',full:true},{id:'data_baixa',l:'Data da Baixa',type:'date'},{id:'obs',l:'Observações',type:'ta',full:true}],
   mon:[
     {id:'tomb',l:'Tombamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},
     {id:'polegadas',l:'Polegadas'},{id:'tipo_tela',l:'Tipo',sel:['LED','IPS','VA','OLED','TN']},
     {id:'conexao',l:'Conexão',sel:['HDMI','VGA','DisplayPort','HDMI/VGA','HDMI/DisplayPort','Múltiplas']},
     {id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},
     {id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização'},
-    {id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},
+    {id:'status',l:'Status',sel:['Ativo','Em estoque','Em manutenção','Baixado']},
     {id:'ult_man',l:'Última Manutenção',type:'date'},
     {id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},
     {id:'t_data',l:'Data da Assinatura',type:'date'},
@@ -856,7 +964,7 @@ const CAMPOS={
     {id:'foto_url',l:'Foto do Equipamento',type:'foto',full:true},
     {id:'obs',l:'Observações',type:'ta',full:true},
   ],
-  eq:[{id:'tomb',l:'Tombamento'},{id:'tipo_eq',l:'Tipo de Equipamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização',polo:true},{id:'status',l:'Status',sel:['Ativo','Manutenção','Inativo']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento',full:true},{id:'foto_url',l:'Foto do Equipamento',type:'foto',full:true},{id:'obs',l:'Observações',type:'ta',full:true}],
+  eq:[{id:'tomb',l:'Tombamento'},{id:'tipo_eq',l:'Tipo de Equipamento'},{id:'marca',l:'Marca'},{id:'modelo',l:'Modelo'},{id:'setor',l:'Setor'},{id:'resp',l:'Responsável'},{id:'whats',l:'WhatsApp (só números)'},{id:'local',l:'Localização',polo:true},{id:'status',l:'Status',sel:['Ativo','Em estoque','Em manutenção','Baixado']},{id:'ult_man',l:'Última Manutenção',type:'date'},{id:'t_status',l:'Status do Termo',sel:['Pendente','Assinado']},{id:'t_data',l:'Data da Assinatura',type:'date'},{id:'t_link',l:'Link do Documento',full:true},{id:'foto_url',l:'Foto do Equipamento',type:'foto',full:true},{id:'motivo_baixa',l:'Motivo da Baixa',full:true},{id:'data_baixa',l:'Data da Baixa',type:'date'},{id:'obs',l:'Observações',type:'ta',full:true}],
 };
 function openMEQ(tipo,idx=null){
   S.meqTipo=tipo;S.meqIdx=idx;
@@ -1325,6 +1433,229 @@ async function uploadFotoEquip(id, tombamento, categoria) {
     };
     reader.readAsDataURL(file);
   });
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ESTOQUE E BAIXADOS
+// ═══════════════════════════════════════════════════════════════════════════
+const abaMap = {pc:'Computadores',imp:'Impressoras',eq:'Equipamentos Diversos',mon:'Monitores'};
+
+function todosEquip() {
+  return [
+    ...db.pc.map(e=>({...e,_tipo:'pc',_cat:'Computador'})),
+    ...db.imp.map(e=>({...e,_tipo:'imp',_cat:'Impressora'})),
+    ...db.eq.map(e=>({...e,_tipo:'eq',_cat:'Equip. Diversos'})),
+    ...(db.mon||[]).map(e=>({...e,_tipo:'mon',_cat:'Monitor'})),
+  ];
+}
+
+// Renderizar tabelas de estoque e baixados
+const _rTbl2 = renderTbl;
+renderTbl = function(tipo, f='') {
+  if(tipo !== 'estoque' && tipo !== 'baixados') return _rTbl2(tipo, f);
+  const q   = f.toLowerCase();
+  const el  = document.getElementById('tbl-'+tipo);
+  if(!el) return;
+
+  const isBaixado = tipo === 'baixados';
+  const rows = todosEquip().filter(e => {
+    const match = isBaixado ? e.status === 'Baixado' : e.status === 'Em estoque';
+    return match && (!q || JSON.stringify(e).toLowerCase().includes(q));
+  });
+
+  if(!rows.length) { el.innerHTML = empty(); return; }
+
+  el.innerHTML = `<table><thead><tr>
+    <th>Tombamento</th><th>Categoria</th><th>Marca</th><th>Modelo</th>
+    ${isBaixado ? '<th>Motivo da Baixa</th><th>Data da Baixa</th>' : '<th>Localização</th>'}
+    <th>Obs</th><th>Ações</th>
+  </tr></thead><tbody>
+  ${rows.map(e => `<tr>
+    <td><strong>${e.tomb}</strong></td>
+    <td>${e._cat}</td>
+    <td>${e.marca||'—'}</td>
+    <td>${e.modelo||e.tipo_eq||'—'}</td>
+    ${isBaixado
+      ? `<td>${e.motivo_baixa||'—'}</td><td>${fmt(e.data_baixa)||'—'}</td>`
+      : `<td>${e.local||'—'}</td>`
+    }
+    <td style="font-size:12px">${e.obs||'—'}</td>
+    <td style="display:flex;gap:4px">
+      ${!isBaixado ? `<button class="btn btn-primary btn-sm" onclick="ativarDoEstoque('${e._tipo}',${getIdx(e._tipo,e.tomb)})">Ativar</button>` : ''}
+      ${isBaixado  ? `<button class="btn btn-ghost btn-sm" onclick="reativarBaixado('${e._tipo}',${getIdx(e._tipo,e.tomb)})">↩ Estoque</button>` : ''}
+      <button class="btn btn-ghost btn-sm" onclick="abrirProntuario('${e._tipo}',${getIdx(e._tipo,e.tomb)})">📋</button>
+      <button class="btn btn-sm" style="background:#FFEBEE;color:var(--vermelho);border:none" onclick="excluirEquip('${e._tipo}',${getIdx(e._tipo,e.tomb)})">🗑️</button>
+    </td>
+  </tr>`).join('')}
+  </tbody></table>`;
+};
+
+function getIdx(tipo, tomb) {
+  return db[tipo].findIndex(e => e.tomb === tomb);
+}
+
+// ── MODAL BAIXA ────────────────────────────────────────────────────────────
+let _baixaIdx = null, _baixaTipo = null;
+
+function abrirModalBaixa(tipo, idx) {
+  _baixaTipo = tipo; _baixaIdx = idx;
+  document.getElementById('modal-baixa').style.display = 'flex';
+  document.getElementById('baixa-data').value = new Date().toISOString().split('T')[0];
+  document.getElementById('baixa-motivo').value = '';
+}
+
+async function confirmarBaixa() {
+  const motivo = document.getElementById('baixa-motivo').value.trim();
+  const data   = document.getElementById('baixa-data').value;
+  if(!motivo) { toast('Informe o motivo da baixa.','err'); return; }
+  const obj = db[_baixaTipo][_baixaIdx];
+  if(!obj) return;
+  obj.status       = 'Baixado';
+  obj.motivo_baixa = motivo;
+  obj.data_baixa   = data;
+  obj.resp         = '';
+  obj.setor        = '';
+  showLoading('Salvando…');
+  if(SCRIPT_URL) {
+    try {
+      const p = new URLSearchParams({action:'update', aba:abaMap[_baixaTipo], data:JSON.stringify(obj)});
+      await fetch(SCRIPT_URL+'?'+p, {redirect:'follow'});
+    } catch(e){}
+  }
+  saveLocal(); hideLoading();
+  closeModal('modal-baixa');
+  renderTbl(_baixaTipo); renderDash();
+  toast('Equipamento baixado!','ok');
+}
+
+// ── ATIVAR DO ESTOQUE ─────────────────────────────────────────────────────
+let _ativarIdx = null, _ativarTipo = null;
+
+function ativarDoEstoque(tipo, idx) {
+  _ativarTipo = tipo; _ativarIdx = idx;
+  const obj = db[tipo][idx];
+  document.getElementById('ativar-tomb').textContent = obj?.tomb || '';
+  document.getElementById('ativar-setor').value  = '';
+  document.getElementById('ativar-resp').value   = '';
+  document.getElementById('ativar-local').innerHTML = campoLocalizacao('ativar-local-inp', obj?.local||'');
+  document.getElementById('modal-ativar').style.display = 'flex';
+}
+
+async function confirmarAtivar() {
+  const setor = document.getElementById('ativar-setor').value.trim();
+  const resp  = document.getElementById('ativar-resp').value.trim();
+  const local = document.getElementById('ativar-local-inp')?.value?.trim() || '';
+  if(!setor && !resp) { toast('Informe pelo menos setor ou responsável.','err'); return; }
+  const obj = db[_ativarTipo][_ativarIdx];
+  obj.status = 'Ativo';
+  obj.setor  = setor;
+  obj.resp   = resp;
+  obj.local  = local;
+  obj.motivo_baixa = '';
+  obj.data_baixa   = '';
+  showLoading('Salvando…');
+  if(SCRIPT_URL) {
+    try {
+      const p = new URLSearchParams({action:'update', aba:abaMap[_ativarTipo], data:JSON.stringify(obj)});
+      await fetch(SCRIPT_URL+'?'+p, {redirect:'follow'});
+    } catch(e){}
+  }
+  saveLocal(); hideLoading();
+  closeModal('modal-ativar');
+  renderTbl('estoque'); renderDash();
+  toast('Equipamento ativado!','ok');
+}
+
+// ── REATIVAR BAIXADO PARA ESTOQUE ─────────────────────────────────────────
+async function reativarBaixado(tipo, idx) {
+  if(!confirm('Mover equipamento de volta ao estoque?')) return;
+  const obj = db[tipo][idx];
+  obj.status       = 'Em estoque';
+  obj.motivo_baixa = '';
+  obj.data_baixa   = '';
+  showLoading('Salvando…');
+  if(SCRIPT_URL) {
+    try {
+      const p = new URLSearchParams({action:'update', aba:abaMap[tipo], data:JSON.stringify(obj)});
+      await fetch(SCRIPT_URL+'?'+p, {redirect:'follow'});
+    } catch(e){}
+  }
+  saveLocal(); hideLoading();
+  renderTbl('baixados'); renderDash();
+  toast('Equipamento reativado para estoque!','ok');
+}
+
+// ── MOVER ATIVO PARA ESTOQUE ──────────────────────────────────────────────
+async function moverParaEstoque(tipo, idx) {
+  if(!confirm('Mover equipamento para o estoque? O setor e responsável serão removidos.')) return;
+  const obj = db[tipo][idx];
+  obj.status = 'Em estoque';
+  obj.setor  = '';
+  obj.resp   = '';
+  showLoading('Salvando…');
+  if(SCRIPT_URL) {
+    try {
+      const p = new URLSearchParams({action:'update', aba:abaMap[tipo], data:JSON.stringify(obj)});
+      await fetch(SCRIPT_URL+'?'+p, {redirect:'follow'});
+    } catch(e){}
+  }
+  saveLocal(); hideLoading();
+  renderTbl(tipo); renderDash();
+  toast('Equipamento movido para estoque!','ok');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PRONTUÁRIO DO EQUIPAMENTO
+// ═══════════════════════════════════════════════════════════════════════════
+function abrirProntuario(tipo, idx) {
+  const obj = db[tipo][idx];
+  if(!obj) return;
+  const mans = db.man.filter(m => String(m.tomb) === String(obj.tomb));
+  document.getElementById('pront-title').textContent = 'Prontuário — ' + obj.tomb;
+
+  let timeline = '';
+
+  // Cadastro inicial
+  timeline += `
+    <div class="pront-item">
+      <div class="pront-icon" style="background:var(--azul)">📋</div>
+      <div class="pront-body">
+        <div class="pront-label">Cadastro inicial</div>
+        <div class="pront-info">${obj._cat||''} · ${obj.marca||''} ${obj.modelo||''}</div>
+        <div class="pront-info">Setor: ${obj.setor||'—'} · Resp: ${obj.resp||'—'} · Local: ${obj.local||'—'}</div>
+        ${obj.foto_url ? `<img src="${obj.foto_url}" onclick="window.open('${obj.foto_url}','_blank')" style="margin-top:8px;width:100%;max-height:180px;object-fit:cover;border-radius:var(--radius);cursor:pointer">` : ''}
+      </div>
+    </div>`;
+
+  // Manutenções
+  mans.forEach(m => {
+    timeline += `
+      <div class="pront-item">
+        <div class="pront-icon" style="background:var(--amarelo)">🔧</div>
+        <div class="pront-body">
+          <div class="pront-label">${m.tipo||'Manutenção'} · ${fmt(m.data)}</div>
+          <div class="pront-info">${m.desc||'—'} · Técnico: ${m.tec||'—'}</div>
+          <div class="pront-info">Custo: ${Number(m.custo||0)>0?'R$ '+Number(m.custo).toFixed(2).replace('.',','):'—'} · ${pill(m.status)}</div>
+          ${m.foto_url ? `<img src="${m.foto_url}" onclick="window.open('${m.foto_url}','_blank')" style="margin-top:8px;width:100%;max-height:180px;object-fit:cover;border-radius:var(--radius);cursor:pointer">` : ''}
+        </div>
+      </div>`;
+  });
+
+  // Baixa (se aplicável)
+  if(obj.status === 'Baixado') {
+    timeline += `
+      <div class="pront-item">
+        <div class="pront-icon" style="background:var(--vermelho)">⬇️</div>
+        <div class="pront-body">
+          <div class="pront-label">Baixado em ${fmt(obj.data_baixa)}</div>
+          <div class="pront-info">Motivo: ${obj.motivo_baixa||'—'}</div>
+        </div>
+      </div>`;
+  }
+
+  document.getElementById('pront-body').innerHTML = timeline || '<div class="empty">Nenhum registro encontrado.</div>';
+  document.getElementById('modal-pront').style.display = 'flex';
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
